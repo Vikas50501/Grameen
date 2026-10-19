@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- PRODUCT CARD · Shopify snippet "product-card". Plug-ins: {{ product.featured_media }}, {{ product.media[1] }}, {{ product.title }}, {{ product.metafields.custom.tagline }}, {{ product.variants }}, {{ product.price | money }}, {{ product.compare_at_price | money }}, {{ product.selected_or_first_available_variant.unit_price | unit_price_with_measurement }}, {{ product.available }}. Fonts: loaded from the Fontshare CDN in this prototype; in the final Shopify theme, self-host these as woff2 via asset_url. -->
+<article style="{{ rootS }}" onMouseEnter="{{ enter }}" onMouseLeave="{{ leave }}">
+  <a href="#spotlight" aria-label="{{ name }}" tabindex="{{ tabIdx }}" style="display:block;position:relative;aspect-ratio:1/1;background:#EDE4CE;overflow:hidden">
+    <div style="{{ imgsS }}">
+      <div style="position:absolute;inset:0"><dc-import name="Photo" w="1000" h="1000" label="{{ l1 }}" alt="{{ alt }}" fill="true" hint-size="100%,100%"></dc-import></div>
+      <div style="{{ img2S }}"><dc-import name="Photo" w="1000" h="1000" label="{{ l2 }}" alt="{{ alt2 }}" fill="true" hint-size="100%,100%"></dc-import></div>
+    </div>
+    <sc-if value="{{ hasBadge }}" hint-placeholder-val="{{ false }}"><span style="{{ badgeS }}">{{ badge }}</span></sc-if>
+  </a>
+  <h3 style="{{ titleS }}"><a href="#spotlight" tabindex="{{ tabIdx }}" style="color:inherit">{{ name }}</a></h3>
+  <div style="{{ descS }}">{{ desc }}</div>
+  <div role="group" aria-label="Size" style="{{ segWrapS }}">
+    <sc-for list="{{ sizes }}" as="z" hint-placeholder-count="3"><button tabindex="{{ tabIdx }}" onClick="{{ z.click }}" onMouseEnter="{{ z.enter }}" onMouseLeave="{{ z.leave }}" aria-pressed="{{ z.on }}" aria-disabled="{{ z.fixed }}" style="{{ z.s }}">{{ z.l }}</button></sc-for>
+  </div>
+  <div style="margin-top:auto;padding-top:16px">
+    <div style="display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:12px;padding-top:12px;border-top:1px solid {{ line }};font-variant-numeric:tabular-nums">
+      <div style="display:flex;align-items:baseline;gap:8px;min-width:0"><span style="font:600 18px/1.2 var(--f-body);color:{{ ink }}">{{ price }}</span><s style="{{ cmpS }}">{{ cmp }}</s></div>
+      <span style="font:400 12px/1.2 var(--f-body);color:{{ ink55 }};white-space:nowrap">{{ unit }}</span>
+    </div>
+    <button onClick="{{ add }}" onMouseEnter="{{ bIn }}" onMouseLeave="{{ bOut }}" tabindex="{{ tabIdx }}" style="{{ btnS }}" style-active="transform:scale(.99)"><span style="{{ labelS }}">{{ btnLabel }}</span><span id="{{ plId }}" style="{{ lineS }}"></span><span style="{{ arrowS }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></span></button>
+  </div>
+</article>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:300,&quot;height&quot;:520},&quot;product&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;onAdd&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(id: string, sizeIndex: number) =&gt; void&quot;},&quot;cta&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Add to cart&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;selected&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;nosizes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;dark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { hov: false, si: 0, hs: -1, bh: false, phase: 'idle' };
+  componentDidMount() { this.reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  componentWillUnmount() { clearTimeout(this.t1); clearTimeout(this.t2); }
+  componentDidUpdate(pp, ps) {
+    if (this.state.phase === 'loading' && ps.phase !== 'loading' && !this.reduce) { const el = document.getElementById(this.plId); el && el.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 450, easing: 'cubic-bezier(0.22,1,0.36,1)', fill: 'forwards' }); }
+  }
+  renderVals() {
+    const P = this.props, p = P.product || {}, s = this.state, E = 'cubic-bezier(0.22,1,0.36,1)', bool = v => v === true || v === 'true';
+    const dark = bool(P.dark), ink = dark ? '#F4EBD6' : '#2A1D12', ink65 = dark ? 'rgba(244,235,214,.65)' : 'rgba(42,29,18,.65)', ink55 = dark ? 'rgba(244,235,214,.55)' : 'rgba(42,29,18,.55)', ink50 = dark ? 'rgba(244,235,214,.5)' : 'rgba(42,29,18,.5)', line = dark ? 'rgba(244,235,214,.25)' : '#D9CCAC', brand = dark ? '#F4EBD6' : '#2E4A1F', onBrand = dark ? '#2E4A1F' : '#F4EBD6';
+    let sizes = p.sizes || []; if (bool(P.nosizes)) sizes = sizes.slice(0, 1);
+    const fixedOne = sizes.length === 1, si = Math.min(s.si, Math.max(0, sizes.length - 1)), z = sizes[si] || ['', 0, 0];
+    const m = n => '₹' + Math.round(n).toLocaleString('en-IN');
+    const sold = p.available === false, sel = bool(P.selected), hidden = bool(P.inert), disabled = bool(P.disabled) && !sel;
+    const sale = z[2] && z[2] > z[1], pct = sale ? Math.round((1 - z[1] / z[2]) * 100) : 0;
+    const um = /([\d.]+)\s*(ml|l|g|kg)\b/i.exec(z[0] || ''); let unit = '';
+    if (um) { const q = +um[1], u = um[2].toLowerCase(), base = (u === 'l' || u === 'kg') ? q * 1000 : q; unit = m(z[1] / base * 100) + ' / 100 ' + ((u === 'ml' || u === 'l') ? 'ml' : 'g'); }
+    const badge = sold ? 'Sold out' : (p.badge || (sale ? 'Save ' + pct + '%' : ''));
+    const bs = { 'Bestseller': ['#2E4A1F', '#F4EBD6', 'none'], 'New': ['#2A1D12', '#F4EBD6', 'none'], 'Sold out': ['#F4EBD6', '#2A1D12', '1px solid #D9CCAC'] }[badge] || ['#A5432A', '#F4EBD6', 'none'];
+    const hv = s.hov && !this.reduce, scroll = sizes.length > 3, tr = this.reduce ? 'none' : '';
+    this.plId = 'pl' + (p.id || 'x') + (hidden ? 'h' : '');
+    const phase = s.phase, adding = !sel && !sold && phase !== 'idle';
+    const label = sold ? 'Notify me' : sel ? (P.ctaSel || 'Remove') : phase === 'added' ? 'Added' : (P.cta || 'Add to cart');
+    const filled = !sold && (sel || phase === 'added');
+    const hoverFill = !sold && !disabled && (s.bh || filled);
+    return {
+      name: p.name || '', desc: p.desc || '', alt: p.alt || p.name, alt2: (p.name || '') + ' in use', l1: p.l1 || 'PRODUCT', l2: p.l2 || 'HOVER', tabIdx: hidden ? -1 : 0, ink, ink55, line,
+      rootS: 'display:flex;flex-direction:column;height:100%;width:100%;min-width:0;background:transparent;color:' + ink,
+      imgsS: 'position:absolute;inset:0;opacity:' + (sold ? .55 : 1),
+      img2S: 'position:absolute;inset:0;transition:' + (this.reduce ? 'none' : 'opacity .5s ' + E) + ';opacity:' + (hv && !sold ? 1 : 0),
+      hasBadge: !!badge, badge, badgeS: 'position:absolute;left:12px;top:12px;background:' + bs[0] + ';color:' + bs[1] + ';border:' + bs[2] + ';padding:5px 8px;font:600 11px/1 var(--f-label);letter-spacing:.12em;text-transform:uppercase',
+      titleS: 'margin:16px 0 0;font:500 20px/1.2 var(--f-sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:' + ink,
+      descS: 'margin-top:4px;font:400 14px/1.4 var(--f-body);color:' + ink65 + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis',
+      segWrapS: scroll ? 'margin-top:16px;display:flex;height:40px;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(to right,#000 85%,transparent);mask-image:linear-gradient(to right,#000 85%,transparent)' : 'margin-top:16px;display:grid;height:40px;grid-template-columns:repeat(' + Math.max(1, sizes.length) + ',minmax(0,1fr))',
+      sizes: sizes.map((q, i) => { const on = fixedOne || i === si, hs = s.hs === i && !on; return { l: q[0], on, fixed: fixedOne, enter: () => this.setState({ hs: i }), leave: () => this.setState({ hs: -1 }), click: () => { if (!fixedOne) this.setState({ si: i }); },
+        s: 'height:40px;flex:' + (scroll ? 'none' : '1') + ';min-width:' + (scroll ? 76 : 0) + 'px;margin-left:' + (i ? -1 : 0) + 'px;padding:0 12px;border-radius:0;border:1px solid ' + (on ? brand : line) + ';background:' + (on ? brand : hs ? (dark ? 'rgba(244,235,214,.12)' : 'rgba(217,204,172,.4)') : 'transparent') + ';color:' + (on ? onBrand : ink) + ';font:500 13px/1 var(--f-body);white-space:nowrap;cursor:' + (fixedOne ? 'default' : 'pointer') + ';position:relative;z-index:' + (on ? 1 : 0) + ';transition:background .3s ' + E }; }),
+      price: m(z[1]), cmp: sale ? m(z[2]) : '', cmpS: sale ? 'font:400 14px/1.2 var(--f-body);color:' + ink50 : 'display:none', unit,
+      enter: () => this.setState({ hov: true }), leave: () => this.setState({ hov: false }), bIn: () => this.setState({ bh: true }), bOut: () => this.setState({ bh: false }),
+      btnLabel: label,
+      btnS: 'position:relative;margin-top:12px;width:100%;height:44px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px;border-radius:0;border:1px solid ' + (sold || disabled ? line : brand) + ';background:' + (hoverFill ? brand : 'transparent') + ';color:' + (sold || disabled ? ink65 : hoverFill ? onBrand : brand) + ';font:600 13px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;cursor:' + (sold || disabled ? 'not-allowed' : 'pointer') + ';transition:background .3s ' + E + ',color .3s ' + E,
+      labelS: 'opacity:' + (phase === 'loading' ? 0 : 1) + ';transition:opacity .2s',
+      lineS: 'position:absolute;left:16px;right:48px;top:50%;height:2px;margin-top:-1px;background:' + (hoverFill ? onBrand : brand) + ';transform-origin:left;transform:scaleX(0);opacity:' + (phase === 'loading' ? 1 : 0),
+      arrowS: 'display:inline-flex;transition:transform .3s ' + E + ';transform:translateX(' + (hoverFill && !sold && !disabled ? 4 : 0) + 'px)',
+      add: () => {
+        if (sold || disabled) return; const f = P.onAdd; if (typeof f === 'function') f(p.id, si);
+        if (sel || bool(P.selected)) return;
+        clearTimeout(this.t1); clearTimeout(this.t2);
+        if (this.reduce) { this.setState({ phase: 'added' }); this.t2 = setTimeout(() => this.setState({ phase: 'idle' }), 1500); return; }
+        this.setState({ phase: 'loading' }); this.t1 = setTimeout(() => { this.setState({ phase: 'added' }); this.t2 = setTimeout(() => this.setState({ phase: 'idle' }), 1500); }, 450);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

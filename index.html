@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- FONTS: Gambetta + Switzer from Fontshare (self-host woff2 in /assets with @font-face for production, preload Gambetta 500), Reenie Beanie, Noto Serif Devanagari (Hindi only) -->
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<!-- In the final Shopify theme, self-host these as woff2 via asset_url -->
+<link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f%5B%5D=gambetta@400,500,401,501&f%5B%5D=switzer@400,500,600&display=swap">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=gambetta@400,500,401,501&f%5B%5D=switzer@400,500,600&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&family=Noto+Serif+Devanagari:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F4EBD6;--paper:#FAF5E6;--forest:#2E4A1F;--moss:#55702F;--ghee:#B8841E;--ghee-ink:#8A5F10;--bark:#2A1D12;--clay:#A5432A;--sand:#D9CCAC;--ease:cubic-bezier(0.22,1,0.36,1);--f-head:'Gambetta','Gambetta Fallback',Georgia,serif;--f-sub:'Gambetta','Gambetta Fallback',Georgia,serif;--f-body:'Switzer','Switzer Fallback',system-ui,sans-serif;--f-label:'Switzer','Switzer Fallback',system-ui,sans-serif;--f-hand:'Reenie Beanie',cursive;--f-hi:'Noto Serif Devanagari',Georgia,serif;--t-display:clamp(2.25rem,4.6vw,4.25rem);--t-h1:clamp(2rem,3.6vw,3.25rem);--t-h2:clamp(1.75rem,3vw,2.75rem);--t-h3:clamp(1.25rem,1.8vw,1.625rem);--t-body:16px;--t-small:14px;--t-label:12px}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;background:#F4EBD6;color:rgba(42,29,18,.85);font:400 16px/1.65 'Switzer','Switzer Fallback',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+*{box-sizing:border-box}
+a{color:#2E4A1F;text-decoration:none}a:hover{color:#8A5F10}
+button,input,textarea{font-family:inherit}button{cursor:pointer}
+:focus-visible{outline:2px solid #2E4A1F;outline-offset:3px}
+.on-dark :focus-visible,[data-dark] :focus-visible{outline-color:#E2B450}
+::selection{background:#B8841E;color:#fff}
+@font-face{font-family:'Gambetta Fallback';src:local('Georgia');size-adjust:97%;ascent-override:94%;descent-override:24%}
+@font-face{font-family:'Switzer Fallback';src:local('Helvetica Neue'),local('Arial');size-adjust:102%;ascent-override:92%;descent-override:24%}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</helmet>
+
+<!-- PRELOADER (logo only) -->
+<div style="{{ preS }}"><img src="assets/grameen-logo.png" width="320" height="256" alt="Grameen, Taste Our Purity" style="width:min(60vw,280px);height:auto;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.1)"></img></div>
+
+<a href="#main" style="position:absolute;left:-999px;top:8px;z-index:9999;background:#2E4A1F;color:#fff;padding:12px 16px" style-focus="left:8px">Skip to content</a>
+
+<!-- ============ HEADER GROUP ============ -->
+<!-- SECTION announcement-bar · schema: messages[] (text, link), autoplay_speed, show_close, color_scheme -->
+<div style="{{ annS }}" role="region" aria-label="Announcement">
+  <div style="position:relative;max-width:1320px;margin:0 auto;height:40px;padding:0 48px">
+    <sc-for list="{{ anns }}" as="a" hint-placeholder-count="3"><div style="{{ a.s }}">{{ a.t }}</div></sc-for>
+    <button onClick="{{ closeAnn }}" aria-label="Close announcement" style="position:absolute;right:8px;top:0;width:44px;height:40px;border:0;background:transparent;color:#F4EBD6;display:grid;place-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"></path></svg></button>
+  </div>
+</div>
+
+<!-- SECTION header · schema: logo (image_picker), menu (link_list), sticky, color_scheme. Plug-in: {{ cart.item_count }}, {% render 'predictive-search' %} -->
+<header style="{{ headS }}">
+  <div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;height:100%">
+    <div style="display:flex;align-items:center;gap:4px">
+      <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openMenu }}" aria-label="Open menu" aria-expanded="{{ menu }}" style="width:44px;height:44px;border:0;background:transparent;color:#2A1D12;display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 7h18M3 12h18M3 17h18"></path></svg></button></sc-if>
+      <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
+        <nav aria-label="Main" style="display:flex;gap:clamp(16px,2.4vw,28px);align-items:center;white-space:nowrap">
+          <button onClick="{{ toggleMega }}" onMouseEnter="{{ openMega }}" aria-expanded="{{ mega }}" aria-haspopup="true" style="border:0;background:transparent;color:#2A1D12;font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;min-height:44px;display:flex;align-items:center;gap:8px">Shop<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="{{ chevS }}"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <a href="#story" style="color:#2A1D12;font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase" style-hover="color:#2E4A1F">Our Story</a>
+          <a href="#process" style="color:#2A1D12;font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase" style-hover="color:#2E4A1F">Process</a>
+          <a href="#journal" style="color:#2A1D12;font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase" style-hover="color:#2E4A1F">Journal</a>
+        </nav>
+      </sc-if>
+    </div>
+    <a href="#top" aria-label="Grameen, home" style="display:block;line-height:0"><img src="assets/grameen-logo.png" width="320" height="256" alt="Grameen, Taste Our Purity" style="{{ logoS }}"></img></a>
+    <div style="display:flex;justify-content:flex-end;align-items:center">
+      <button onClick="{{ openSearch }}" aria-label="Search" style="width:44px;height:44px;border:0;background:transparent;color:#2A1D12;display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="6.500"></circle><path d="M16 16l4.500 4.500"></path></svg></button>
+      <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}"><a href="#top" aria-label="Account" style="width:44px;height:44px;color:#2A1D12;display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8.500" r="4"></circle><path d="M4.500 20c1-4 4-6 7.500-6s6.500 2 7.500 6"></path></svg></a></sc-if>
+      <button onClick="{{ openCart }}" aria-label="Open cart" aria-expanded="{{ cart }}" style="position:relative;width:44px;height:44px;border:0;background:transparent;color:#2A1D12;display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.200 11.500H6.200Z"></path><path d="M9 8V6.500a3 3 0 0 1 6 0V8"></path></svg><span style="position:absolute;right:2px;top:4px;min-width:18px;height:18px;border-radius:9px;background:#2E4A1F;color:#F4EBD6;font:600 11px/18px var(--f-body);text-align:center;font-variant-numeric:tabular-nums"><!-- {{ cart.item_count }} -->{{ count }}</span></button>
+    </div>
+  </div>
+  <!-- Mega menu: Shop -->
+  <div id="mega" onMouseLeave="{{ closeMega }}" style="{{ megaS }}">
+    <div style="max-width:1320px;margin:0 auto;padding:40px clamp(16px,2.2vw,24px);display:grid;grid-template-columns:1fr 1fr 1fr 1.2fr;gap:40px">
+      <sc-for list="{{ megaCols }}" as="c" hint-placeholder-count="3"><div><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:20px">{{ c.h }}</div><div style="display:flex;flex-direction:column;gap:4px"><sc-for list="{{ c.links }}" as="l" hint-placeholder-count="3"><a href="#best-sellers" onClick="{{ closeMega }}" style="min-height:36px;display:flex;align-items:center;color:#2A1D12;font:500 16px var(--f-body)" style-hover="color:#2E4A1F">{{ l }}</a></sc-for></div></div></sc-for>
+      <a href="#collections" onClick="{{ closeMega }}" style="display:block;color:#2A1D12"><dc-import name="Photo" w="640" h="440" label="MEGA MENU: festive hamper flat lay" radius="2px" hint-size="100%,200px"></dc-import><div style="margin-top:12px;font:600 14px var(--f-body)">The Festive Hamper &rarr;</div></a>
+    </div>
+  </div>
+</header>
+<div onClick="{{ closeAll }}" style="{{ megaScrim }}"></div>
+
+<!-- SEARCH OVERLAY (predictive). Plug-in: /search/suggest.json?q= -->
+<div id="search-panel" role="dialog" aria-modal="true" aria-label="Search" style="{{ searchS }}">
+  <div style="max-width:880px;margin:0 auto;padding:32px clamp(16px,2.2vw,24px) 40px">
+    <div style="display:flex;align-items:center;gap:12px;border-bottom:2px solid #2A1D12">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="flex:none"><circle cx="11" cy="11" r="6.500"></circle><path d="M16 16l4.500 4.500"></path></svg>
+      <input id="search-input" value="{{ q }}" onInput="{{ onQ }}" placeholder="Search ghee, mango pickle, gift sets" aria-label="Search the store" style="flex:1;height:60px;border:0;background:transparent;font:500 clamp(22px,3vw,34px) var(--f-sub);color:#2A1D12;outline:none"></input>
+      <button onClick="{{ closeAll }}" aria-label="Close search" style="width:44px;height:44px;border:0;background:transparent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"></path></svg></button>
+    </div>
+    <div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin:28px 0 12px">{{ searchHead }}</div>
+    <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ results }}" as="r" hint-placeholder-count="3"><a href="#best-sellers" onClick="{{ closeAll }}" style="display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #D9CCAC;color:#2A1D12;font:500 17px var(--f-body)"><span>{{ r.name }}</span><span style="font-variant-numeric:tabular-nums;color:#2E4A1F;font-weight:600">{{ r.price }}</span></a></sc-for>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE MENU DRAWER -->
+<div onClick="{{ closeAll }}" style="{{ menuScrim }}"></div>
+<aside id="mob-menu" role="dialog" aria-modal="true" aria-label="Menu" style="{{ menuS }}">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #D9CCAC"><img src="assets/grameen-logo.png" width="320" height="256" alt="Grameen" style="height:44px;width:auto;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.1)"></img><button onClick="{{ closeAll }}" aria-label="Close menu" style="width:44px;height:44px;border:0;background:transparent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"></path></svg></button></div>
+  <nav aria-label="Mobile" style="padding:16px;display:flex;flex-direction:column">
+    <sc-for list="{{ mobLinks }}" as="m" hint-placeholder-count="6"><a href="{{ m.href }}" onClick="{{ closeAll }}" style="min-height:56px;display:flex;align-items:center;border-bottom:1px solid #D9CCAC;color:#2A1D12;font:500 var(--t-h3)/1.2 var(--f-sub)">{{ m.t }}</a></sc-for>
+  </nav>
+</aside>
+
+<main id="main">
+<span id="top"></span>
+<!-- ============ 1 · HERO ============ SECTION hero · schema: heading, subheading, image, btn_1 (label, link), btn_2, rating_text, color_scheme, padding -->
+<section style="background:#F4EBD6;color:#2A1D12;overflow:hidden">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));min-height:min(calc(100svh - 120px),820px)">
+    <div style="display:flex;flex-direction:column;justify-content:center;padding:clamp(40px,6vw,96px) clamp(16px,4vw,72px);max-width:760px;justify-self:end;width:100%">
+      <div data-hero-in style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:24px">Small-batch ghee and pickles</div>
+      <h1 data-mask="load" style="margin:0 0 24px;font:400 var(--t-display)/1.05 var(--f-head);letter-spacing:-.02em;max-width:22ch;color:#2E4A1F">Ghee and pickles, made the <span style="color:#B8841E;font-style:italic">slow way.</span></h1>
+      <p data-hero-in style="margin:0 0 36px;max-width:440px;font:400 clamp(17px,1.4vw,19px)/1.6 var(--f-body);color:#4A3A28">Bilona ghee churned by hand. Mango, lime and chilli pickles cured in the sun. Jarred in the village, delivered to your kitchen.</p>
+      <div data-hero-in style="display:flex;flex-wrap:wrap;gap:12px"><a href="#best-sellers" style="{{ btnP }}" style-hover="gap:18px;background:#2A1D12;color:#F4EBD6">Shop ghee<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a><a href="#best-sellers" onClick="{{ none }}" style="{{ btnS }}" style-hover="background:#2A1D12;color:#F4EBD6">Explore pickles</a></div>
+      <div data-hero-in style="display:flex;align-items:center;gap:12px;margin-top:32px;font:500 14px var(--f-body);color:#4A3A28"><span style="display:flex;gap:2px"><sc-for list="{{ stars }}" as="s" hint-placeholder-count="5"><svg width="16" height="16" viewBox="0 0 22 22"><path d="M11 1.500l2.900 6.300 6.800.7-5.100 4.600 1.500 6.700L11 16.300 4.900 19.800l1.500-6.700L1.300 8.500l6.800-.7Z" fill="#B8841E"></path></svg></sc-for></span><span><strong style="font-variant-numeric:tabular-nums">4.9</strong>, 2,000+ happy kitchens</span></div>
+    </div>
+    <div style="position:relative;min-height:clamp(380px,62vw,780px);overflow:hidden">
+      <div aria-hidden="true" style="position:absolute;left:clamp(16px,3vw,40px);bottom:clamp(16px,3vw,40px);z-index:2;width:clamp(104px,11vw,136px);aspect-ratio:1;border-radius:50%;background:#FAF5E6;color:#A5432A;display:grid;place-items:center;text-align:center;transform:rotate(-8deg);box-shadow:0 0 0 3px #FAF5E6,0 0 0 5px #A5432A;outline:1.5px dashed #A5432A;outline-offset:-9px;font:600 11px/1.25 var(--f-label);letter-spacing:.14em;text-transform:uppercase"><div>Small-batch<div style="font:500 var(--t-h3)/1.2 var(--f-sub);letter-spacing:0;margin:2px 0">2014</div>Since</div></div><div id="hero-img" style="position:absolute;inset:0"><dc-import name="Photo" w="1600" h="1800" label="HERO: ghee jar on wooden table, morning light" alt="A jar of Grameen bilona ghee on a wooden kitchen table in morning light" eager="true" fill="true" hint-size="100%,100%"></dc-import></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2 · TRUST BAR ============ SECTION icon-row · schema: blocks[icon, heading, text] -->
+<section style="background:#FAF5E6;border-top:1px solid #D9CCAC;border-bottom:1px solid #D9CCAC">
+  <div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))">
+    <sc-for list="{{ trust }}" as="t" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:16px;padding:24px 20px;border-left:1px solid #D9CCAC"><svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="#2E4A1F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:none" dangerouslySetInnerHTML="{{ t.icon }}"></svg><div><div style="font:600 15px/1.2 var(--f-body)">{{ t.h }}</div><div style="font:400 14px/1.4 var(--f-body);color:#5A4A36;margin-top:2px">{{ t.p }}</div></div></div></sc-for>
+  </div>
+</section>
+
+<!-- ============ 3 · COLLECTION LIST ============ SECTION collection-list · schema: heading, blocks[collection, image] · {% for collection in section.blocks %} -->
+<section id="collections" style="padding:clamp(56px,8vw,96px) 0;background:#F4EBD6">
+  <div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:40px"><div><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:16px">Shop by collection</div><h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#2E4A1F">Three ways to fill the <span style="color:#B8841E;font-style:italic">shelf</span></h2></div><div style="max-width:380px;display:flex;flex-direction:column;gap:14px;align-items:flex-start"><p style="margin:0;font:400 16px/1.65 var(--f-body);color:#4A3A28">Ghee churned by hand, pickles cured in the sun, and boxes to give away. Start with the shelf that suits your table.</p><a href="#best-sellers" style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#2E4A1F;border-bottom:1px solid #2E4A1F;padding-bottom:6px">View all products</a></div></div>
+    <div style="{{ colWrapS }}"><div style="display:flex;gap:24px;width:max-content;animation:mq 80s linear infinite" style-hover="animation-play-state:paused">
+      <sc-for list="{{ collections }}" as="c" hint-placeholder-count="3">
+        <a href="#best-sellers" aria-hidden="{{ c.hid }}" tabindex="{{ c.tab }}" onMouseEnter="{{ c.enter }}" onMouseLeave="{{ c.leave }}" style="flex:none;width:clamp(250px,26vw,340px);display:block;color:#2A1D12">
+          <div style="position:relative;overflow:hidden;border-radius:2px;background:#E9E1CF"><div style="{{ c.zoom }}"><dc-import name="Photo" w="900" h="1100" label="{{ c.label }}" alt="{{ c.alt }}" hint-size="100%,400px"></dc-import></div><span style="position:absolute;left:12px;top:12px;background:#FAF5E6;color:#2A1D12;padding:7px 10px;border-radius:2px;font:600 11px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase">{{ c.count }}</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0 0"><div><div style="font:500 var(--t-h3)/1.2 var(--f-sub)">{{ c.name }}</div><div style="font:400 14px/1.5 var(--f-body);color:#5A4A36;margin-top:4px">{{ c.desc }}</div></div><span style="{{ c.arr }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></span></div>
+        </a>
+      </sc-for>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 · BEST SELLERS ============ SECTION featured-collection · schema: collection, products_to_show, enable_quick_add, columns_mobile · {% for product in collections['best-sellers'].products %} -->
+<section id="best-sellers" style="padding:clamp(56px,8vw,96px) 0;background:#FAF5E6;border-top:1px solid #D9CCAC;overflow:hidden">
+  <div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:40px">
+      <div><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:16px">Best sellers</div><h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#2E4A1F">What our kitchens <span style="color:#B8841E;font-style:italic">reorder</span></h2></div>
+      <a href="#best-sellers" style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#2E4A1F;border-bottom:1px solid #2E4A1F;padding-bottom:6px">Shop all products</a>
+    </div>
+  </div>
+  <div style="{{ bsWrapS }}">
+    <div style="display:flex;gap:{{ bsGap }}px;width:max-content;padding:0 12px;animation:mq 90s linear infinite" style-hover="animation-play-state:paused">
+      <sc-for list="{{ products }}" as="p" hint-placeholder-count="6"><div aria-hidden="{{ p.hid }}" style="flex:none;width:{{ bsCardW }};display:grid;grid-template-columns:minmax(0,1fr)"><dc-import name="ProductCard" product="{{ p.data }}" onAdd="{{ addFn }}" inert="{{ p.hid }}" hint-size="100%,520px" style="display:flex;flex:1;min-width:0"></dc-import></div></sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 · OUR STORY ============ SECTION image-with-text · schema: image, layout (image_left/right), heading, text, signature, link, color_scheme (scheme-2) -->
+<section id="story" style="background:#2E4A1F;color:#F4EBD6" data-dark>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr))">
+    <div data-reveal="clip" style="position:relative;overflow:hidden;min-height:clamp(380px,56vw,720px)"><div data-parallax style="position:absolute;left:0;right:0;top:-6%;bottom:-6%"><dc-import name="Photo" w="1400" h="1500" label="STORY: woman churning curd in a wooden pot, village kitchen" alt="A woman churning curd by hand in a clay pot in a village kitchen" fill="true" hint-size="100%,100%"></dc-import></div></div>
+    <div style="padding:clamp(48px,7vw,112px) clamp(16px,5vw,88px);display:flex;flex-direction:column;justify-content:center;gap:24px;max-width:720px">
+      <div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#E2B450">Our story</div>
+      <h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em">Grameen means “of the <span style="color:#B8841E;font-style:italic">village</span>”</h2>
+      <p style="margin:0;font:400 18px/1.65 var(--f-body);color:#E8E2CC">It started in my grandmother’s kitchen in Bundelkhand, where ghee was made every Sunday and the mango pickle jars sat on the terrace for most of May.</p>
+      <p style="margin:0;font:400 18px/1.65 var(--f-body);color:#E8E2CC">We work with 40 families who still make food this way. We pay them fairly, test every batch, and put nothing in the jar that was not in hers.</p>
+      <div style="font:400 34px/1.2 var(--f-hand);color:#E2B450;transform:rotate(-2deg);transform-origin:left">With care, Lakshmi. Founder</div>
+      <a href="#process" style="align-self:flex-start;color:#F4EBD6;font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid #E2B450;padding-bottom:8px">Read how we make it</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 · THE BILONA WAY ============ SECTION process-tabs · schema: tabs[name], steps[image, heading, text] -->
+<section id="process" style="padding:clamp(56px,8vw,96px) 0;background:#F4EBD6"><div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px)">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(32px,4vw,56px)"><div><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:16px">The bilona way</div><h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#2E4A1F">Slow, by <span style="color:#B8841E;font-style:italic">hand</span>, in this order</h2></div>
+<div role="tablist" aria-label="Choose a process" style="position:relative;display:flex;padding:4px;background:#FAF5E6;border:1px solid #D9CCAC;border-radius:2px"><div aria-hidden="true" style="{{ bilPill }}"></div><sc-for list="{{ bilTabs }}" as="t" hint-placeholder-count="2"><button role="tab" aria-selected="{{ t.on }}" onClick="{{ t.click }}" style="{{ t.s }}">{{ t.l }}</button></sc-for></div></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(24px,5vw,80px);align-items:start">
+<div style="display:flex;flex-direction:column;gap:20px;order:{{ bilListOrder }}">
+<div role="tablist" aria-orientation="vertical" aria-label="Steps" onKeyDown="{{ bilKey }}" style="{{ bilListS }}"><div aria-hidden="true" style="{{ bilRail }}"></div><div aria-hidden="true" style="{{ bilFill }}"></div>
+<sc-for list="{{ bilSteps }}" as="b" hint-placeholder-count="6"><button role="tab" aria-selected="{{ b.on }}" onClick="{{ b.click }}" style="{{ b.s }}"><span style="{{ b.dot }}">{{ b.n }}</span><span style="display:block;flex:1;min-width:0"><span style="{{ b.tS }}">{{ b.t }}</span><span style="{{ b.dS }}"><span style="overflow:hidden;display:block"><span style="display:block;padding-top:8px;font:400 16px/1.65 var(--f-body);color:#4A3A28;max-width:440px">{{ b.p }}</span><span style="display:block;margin-top:10px;font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10">{{ b.meta }}</span></span></span></span></button></sc-for></div></div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="position:relative;overflow:hidden;border-radius:2px;background:#E9E1CF"><div id="bil-photo"><dc-import name="Photo" w="1200" h="1300" label="{{ bilCur.label }}" alt="{{ bilCur.alt }}" hint-size="100%,420px"></dc-import></div>
+<span style="position:absolute;left:12px;top:12px;background:#FAF5E6;color:#2A1D12;padding:7px 10px;border-radius:2px;font:600 11px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;font-variant-numeric:tabular-nums">Step {{ bilCur.n }} of {{ bilCur.total }}</span>
+<div aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(250,245,230,.6)"><div style="{{ bilBar }}"></div></div></div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:16px"><div style="font:600 13px/1.3 var(--f-body);color:#5A4A36;font-variant-numeric:tabular-nums">{{ bilCur.t }}</div><div style="display:flex;gap:8px"><button onClick="{{ bilPrev }}" aria-label="Previous step" style="{{ arrowB }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button><button onClick="{{ bilNext }}" aria-label="Next step" style="{{ arrowB }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button></div></div>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><div role="tabpanel" style="padding-top:8px"><h3 style="margin:0 0 8px;font:500 26px/1.2 var(--f-sub)">{{ bilCur.t }}</h3><p style="margin:0 0 10px;font:400 16px/1.65 var(--f-body);color:#4A3A28">{{ bilCur.p }}</p><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10">{{ bilCur.meta }}</div></div></sc-if>
+</div></div></div></section>
+
+<!-- ============ 7 · DADI'S RECIPE BOOK ============ SECTION recipe-card · schema: background_image, photo, title, year, ingredients[], note, link · scheme-4 terracotta tint -->
+<section style="padding:clamp(56px,8vw,96px) 0;background:#EBD3BE;position:relative;overflow:hidden">
+<!-- BACKGROUND PHOTO PLACEHOLDER: aged paper grain, low opacity -->
+<div aria-hidden="true" style="position:absolute;inset:0;opacity:.35"><dc-import name="Photo" w="1600" h="1000" label="TEXTURE: aged paper grain, background" alt="" fill="true" hint-size="100%,100%"></dc-import></div>
+<div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px);position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(32px,5vw,72px);align-items:center">
+<div data-reveal="clip" style="max-width:480px;justify-self:center;width:100%;padding:12px;background:#FAF5E6;box-shadow:0 2px 0 rgba(42,30,20,.2);transform:rotate(-1.5deg)"><div style="overflow:hidden;border-radius:999px 999px 2px 2px"><dc-import name="Photo" w="900" h="1100" label="DADI: grandmother cutting raw mangoes in a courtyard" alt="A grandmother cutting raw mangoes in a village courtyard" hint-size="100%,400px"></dc-import></div><div style="font:400 32px/1 var(--f-hand);color:#5A4A36;text-align:center;padding:14px 0 4px">Dadi, 1974</div></div>
+<div data-reveal style="position:relative"><div style="height:14px;background:radial-gradient(circle at 10px 0,transparent 7px,#FAF5E6 7.5px) 0 0/20px 14px repeat-x"></div>
+<div style="position:relative;background:#FAF5E6;padding:clamp(28px,4vw,56px);box-shadow:0 2px 0 rgba(42,30,20,.15)">
+<div aria-hidden="true" style="position:absolute;right:clamp(16px,3vw,32px);top:-34px;width:92px;height:92px;border-radius:50%;border:2px solid #A5432A;color:#A5432A;display:grid;place-items:center;text-align:center;font:600 11px/1.2 var(--f-label);letter-spacing:.14em;text-transform:uppercase;transform:rotate(9deg);background:#FAF5E6;outline:1.5px dashed #A5432A;outline-offset:-7px"><div>Recipe<div style="font:500 24px/1.2 var(--f-sub);letter-spacing:0">1962</div></div></div>
+
+<h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#2E4A1F;margin-bottom:8px">Dadi’s <span style="color:#B8841E;font-style:italic">mango</span> pickle</h2>
+<div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:24px">Handwritten, 1962 · Makes one big jar</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:28px"><div><p style="margin:0 0 14px;font:400 16px/1.7 var(--f-body);color:#4A3A28">Cut the mangoes with the stone in, never peeled. Salt them overnight, dry them under the May sun for two days, then fold in the spices and the mustard oil warmed until it just smokes.</p><p style="margin:0;font:400 16px/1.7 var(--f-body);color:#4A3A28">Fill the jar to the neck. Leave it on the terrace for six weeks and stir it every Sunday. We still make it this way.</p><div style="font:400 32px/1.2 var(--f-hand);color:#A5432A;margin-top:20px;transform:rotate(-2deg);transform-origin:left">“Never rush the sun, beta.”</div></div>
+<div style="border-left:4px double #A5432A;padding-left:20px"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#A5432A;margin-bottom:14px">Ingredients</div><ul style="list-style:none;margin:0;padding:0;display:grid;gap:8px;font:500 15px/1.4 var(--f-body)"><sc-for list="{{ dadiIng }}" as="i" hint-placeholder-count="8"><li>{{ i }}</li></sc-for></ul></div></div>
+<a href="#best-sellers" onClick="{{ goPickles }}" style="{{ btnP }};margin-top:28px" style-hover="gap:18px;background:#2A1D12;color:#F4EBD6">Shop the pickle collection</a>
+</div></div></div></section>
+
+<!-- ============ 8 · MEET THE VILLAGE ============ SECTION people-tabs · schema settings: eyebrow, heading, intro, link_label, link_url, color_scheme (scheme-2), padding_top, padding_bottom · blocks (max 6): person [image, name, village, role, years, quote, story_link]; stat [number, suffix, label] · PLACEHOLDER copy, replace with real quotes -->
+<section id="village" style="padding:clamp(56px,8vw,96px) 0;background:#2E4A1F;color:#F4EBD6" data-dark><div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px)">
+<div style="{{ vHeadS }}"><div style="{{ vL }}"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#E2B450;margin-bottom:16px">The people behind the jar</div><h2 data-mask style="margin:0;max-width:24ch;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#F4EBD6">Made by <span style="color:#E2B450;font-style:italic">real</span> hands, in real villages</h2></div>
+<div style="{{ vR }}"><p style="margin:0;max-width:44ch;font:400 16px/1.65 var(--f-body);color:rgba(244,235,214,.8)">Every jar starts with someone we know by name. Meet a few of the people who grow, churn and cure what you eat.</p><a href="#village" onMouseEnter="{{ vLinkIn }}" onMouseLeave="{{ vLinkOut }}" style="display:inline-flex;align-items:center;gap:8px;color:#F4EBD6;font:600 14px/1 var(--f-body);letter-spacing:.04em;border-bottom:1px solid rgba(244,235,214,.5);padding-bottom:6px;align-self:flex-start">Read village stories<span style="{{ vArrowS }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></span></a></div></div>
+<div style="height:1px;background:rgba(244,235,214,.2);margin:32px 0 clamp(32px,4vw,48px)"></div>
+<div style="{{ vMainS }}">
+<div style="{{ vPhotoCol }}"><div onTouchStart="{{ vTS }}" onTouchEnd="{{ vTE }}" style="{{ vPhotoS }}">
+<sc-for list="{{ vLayers }}" as="l" hint-placeholder-count="4"><div data-vlayer="{{ l.i }}" style="{{ l.s }}"><div style="position:absolute;inset:0"><dc-import name="Photo" w="1200" h="1500" label="{{ l.label }}" alt="{{ l.alt }}" eager="true" fill="true" hint-size="100%,100%"></dc-import></div></div></sc-for>
+<div style="position:absolute;left:0;right:0;bottom:0;z-index:5;background:rgba(42,29,18,.85);padding:12px 16px;font:600 13px/1.3 var(--f-body);color:#F4EBD6">{{ vCur.name }} <span style="font-weight:400;color:rgba(244,235,214,.75)">· {{ vCur.village }}</span></div></div></div>
+<sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}"><div id="v-list" role="tablist" aria-orientation="vertical" aria-label="People" onKeyDown="{{ vKey }}" style="grid-column:8/13;border-top:1px solid rgba(244,235,214,.2)">
+<sc-for list="{{ people }}" as="p" hint-placeholder-count="4"><div onMouseEnter="{{ p.enter }}" onMouseLeave="{{ p.leave }}" style="{{ p.rowS }}"><span aria-hidden="true" style="{{ p.bar }}"></span>
+<button id="{{ p.tid }}" role="tab" aria-selected="{{ p.on }}" aria-controls="{{ p.pid }}" tabindex="{{ p.tab }}" onClick="{{ p.click }}" style="display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:16px;align-items:center;width:100%;min-height:88px;padding:0 16px 0 20px;border:0;background:transparent;color:#F4EBD6;text-align:left"><span style="font:600 12px/1 var(--f-label);letter-spacing:.14em;color:#E2B450;font-variant-numeric:tabular-nums">{{ p.n }}</span><span style="display:block;min-width:0"><span style="{{ p.nameS }}">{{ p.name }}</span><span style="display:block;margin-top:4px;font:400 14px/1.4 var(--f-body);color:rgba(244,235,214,.7)">{{ p.meta }}</span></span><span style="font:600 14px/1 var(--f-body);font-variant-numeric:tabular-nums">{{ p.yrs }}</span></button>
+<div id="{{ p.pid }}" role="tabpanel" aria-labelledby="{{ p.tid }}" aria-hidden="{{ p.off }}" style="{{ p.panelS }}"><div style="overflow:hidden"><div style="padding:0 20px 24px 68px"><p style="margin:0 0 14px;max-width:34ch;font:italic 400 18px/1.4 var(--f-head);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">“{{ p.quote }}”</p><a href="#village" tabindex="{{ p.tab }}" style="font:600 13px/1 var(--f-body);letter-spacing:.04em;color:#E2B450;border-bottom:1px solid #E2B450;padding-bottom:4px">{{ p.story }}</a></div></div></div>
+<span aria-hidden="true" style="position:absolute;left:0;right:0;bottom:-1px;height:2px;background:#E2B450;transform-origin:left;transform:scaleX(0)" data-vprog="{{ p.i }}"></span></div></sc-for></div></sc-if>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:16px"><div role="tablist" aria-label="People" onKeyDown="{{ vKey }}" style="display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><button id="{{ c.tid }}" role="tab" aria-selected="{{ c.on }}" aria-controls="vpm" onClick="{{ c.click }}" style="{{ c.s }}">{{ c.name }}</button></sc-for></div>
+<div id="vpm" role="tabpanel" style="display:flex;flex-direction:column;gap:8px"><div style="font:500 22px/1.2 var(--f-sub)">{{ vCur.name }}</div><div style="font:400 14px/1.4 var(--f-body);color:rgba(244,235,214,.7)">{{ vCur.meta }}</div><p style="margin:8px 0 6px;font:italic 400 18px/1.4 var(--f-head)">“{{ vCur.quote }}”</p><a href="#village" style="align-self:flex-start;font:600 13px/1 var(--f-body);letter-spacing:.04em;color:#E2B450;border-bottom:1px solid #E2B450;padding-bottom:4px">{{ vCur.story }}</a></div></div></sc-if>
+</div>
+<div style="{{ vStatsS }}"><sc-for list="{{ vStats }}" as="s" hint-placeholder-count="4"><div style="{{ s.s }}"><div style="font:400 40px/1 var(--f-head);font-variant-numeric:tabular-nums"><span data-count="{{ s.n }}">0</span>{{ s.suf }}</div><div style="margin-top:8px;font:500 13px/1.3 var(--f-body);color:rgba(244,235,214,.7)">{{ s.l }}</div></div></sc-for></div>
+</div></section>
+
+<!-- ============ 9 · SEASONAL PICKLE CALENDAR ============ SECTION seasonal-calendar · schema settings: eyebrow, heading, intro, color_scheme (scheme-1), padding_top, padding_bottom · blocks (12): month [month_number, season_band, heading, copy, photo, caption, ingredients x3 (name + status), product (product picker), availability (in_stock | pre_order | resting), batch_note] · PLACEHOLDER copy -->
+<section id="calendar" style="padding:clamp(56px,8vw,96px) 0;background:#F4EBD6;border-top:1px solid #D9CCAC"><div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px)">
+<div style="{{ cHeadS }}"><div style="{{ cLS }}"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:16px">Seasonal pickle calendar</div><h2 data-mask style="margin:0;max-width:24ch;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#2E4A1F">What is in the jar this <span style="color:#B8841E;font-style:italic">month</span></h2></div>
+<div style="{{ cRS }}"><p style="margin:0;max-width:44ch;font:400 16px/1.65 var(--f-body);color:rgba(42,29,18,.7)">Our pickles follow the harvest. Pick a month to see what is being cut, cured and packed.</p></div></div>
+<div style="margin-top:clamp(28px,4vw,48px)">
+<sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr))"><sc-for list="{{ calBands }}" as="b" hint-placeholder-count="4"><div style="{{ b.s }}">{{ b.l }}</div></sc-for></div></sc-if>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><div style="border-top:1px solid #D9CCAC;padding:10px 0 4px;font:600 11px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:rgba(42,29,18,.55)">{{ calBandNow }}</div></sc-if>
+<div id="cal-track" style="{{ calTrackS }}"><div role="tablist" aria-label="Month" onKeyDown="{{ calKey }}" style="{{ calInnerS }}">
+<sc-for list="{{ calMonths }}" as="m" hint-placeholder-count="12"><button id="{{ m.id }}" role="tab" aria-selected="{{ m.on }}" aria-controls="cal-panel" tabindex="{{ m.tab }}" onClick="{{ m.click }}" onMouseEnter="{{ m.enter }}" onMouseLeave="{{ m.leave }}" style="{{ m.s }}"><span style="{{ m.nowS }}">Now</span><span style="{{ m.lS }}">{{ m.l }}</span><span style="{{ m.dot }}"></span></button></sc-for>
+<span aria-hidden="true" style="{{ calBar }}"></span></div></div>
+<div style="border-bottom:1px solid #D9CCAC"></div></div>
+<div id="cal-panel" role="tabpanel" aria-live="polite" style="{{ cMainS }}">
+<div id="cal-text" style="{{ cTextS }}">
+<div data-ct style="font:600 11px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#A5432A">In season · {{ calCur.band }}</div>
+<div data-ct style="margin-top:8px;font:400 clamp(2.5rem,5vw,4rem)/1 var(--f-head);color:#2A1D12">{{ calCur.full }}</div>
+<p data-ct style="margin:16px 0 0;max-width:44ch;font:400 17px/1.6 var(--f-body);color:rgba(42,29,18,.8)">{{ calCur.copy }}</p>
+<div data-ct style="margin-top:32px"><div style="font:600 11px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:rgba(42,29,18,.55);padding-bottom:12px;border-bottom:1px solid #D9CCAC">On the counter</div>
+<sc-for list="{{ calIngs }}" as="i" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;align-items:center;gap:16px;height:52px;border-bottom:1px solid #D9CCAC"><span style="font:500 20px/1.2 var(--f-sub)">{{ i.n }}</span><span style="display:flex;align-items:center;gap:8px;font:500 13px/1 var(--f-body);color:rgba(42,29,18,.8)"><span style="{{ i.dot }}"></span>{{ i.st }}</span></div></sc-for></div>
+<div data-ct style="margin-top:32px;border:1px solid #D9CCAC;padding:16px;display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:16px;align-items:center"><div style="width:72px;height:72px;overflow:hidden;background:#EDE4CE"><dc-import name="Photo" w="288" h="288" label="{{ calProd.label }}" alt="{{ calProd.name }}" nodims="true" fill="true" hint-size="72px,72px"></dc-import></div><div style="min-width:0"><div style="font:500 18px/1.25 var(--f-sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ calProd.name }}</div><div style="margin-top:4px;font:500 14px/1.3 var(--f-body);font-variant-numeric:tabular-nums">{{ calProd.meta }}</div></div><a href="#best-sellers" onMouseEnter="{{ viewIn }}" onMouseLeave="{{ viewOut }}" style="display:inline-flex;align-items:center;gap:6px;color:#2E4A1F;font:600 14px/1 var(--f-body)">View<span style="{{ viewArrowS }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></span></a></div>
+<div data-ct style="margin-top:24px"><button onClick="{{ calAct }}" onMouseEnter="{{ ctaIn }}" onMouseLeave="{{ ctaOut }}" style="{{ calBtnS }}"><span>{{ calBtn }}</span><span style="{{ ctaArrowS }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></span></button><div style="margin-top:12px;font:400 13px/1.5 var(--f-body);color:rgba(42,29,18,.6)">{{ calNote }}</div></div>
+</div>
+<div style="{{ cPhotoCol }}"><div onTouchStart="{{ cTS }}" onTouchEnd="{{ cTE }}" style="{{ cPhotoS }}">
+<sc-for list="{{ calLayers }}" as="l" hint-placeholder-count="12"><div data-clayer="{{ l.i }}" aria-hidden="{{ l.hid }}" style="{{ l.s }}"><div style="position:absolute;inset:0"><dc-import name="Photo" w="1200" h="1500" label="{{ l.label }}" alt="{{ l.alt }}" eager="true" fill="true" hint-size="100%,100%"></dc-import></div></div></sc-for>
+<div style="position:absolute;left:0;right:0;bottom:0;z-index:5;background:rgba(42,29,18,.85);color:#F4EBD6;display:flex;align-items:center;min-height:44px"><div style="flex:1;min-width:0;padding:10px 16px;font:500 13px/1.35 var(--f-body)">{{ calCur.caption }}</div>
+<button onClick="{{ calPrev }}" aria-label="Previous month" style="width:44px;height:44px;flex:none;border:0;border-left:1px solid rgba(244,235,214,.25);background:transparent;color:#F4EBD6;display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button><span style="font:600 12px/1 var(--f-body);letter-spacing:.06em;font-variant-numeric:tabular-nums;padding:0 4px">{{ calCount }}</span><button onClick="{{ calNext }}" aria-label="Next month" style="width:44px;height:44px;flex:none;border:0;background:transparent;color:#F4EBD6;display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button></div></div></div>
+</div></div></section>
+
+<!-- ============ 10 · INGREDIENTS WALL ============ SECTION ingredient-grid · schema: blocks[image, hindi, english, origin, note] -->
+<section style="padding:clamp(56px,8vw,96px) 0;background:#FAF5E6;position:relative;overflow:hidden;border-top:1px solid #D9CCAC">
+<div aria-hidden="true" style="position:absolute;inset:0;opacity:.18"><dc-import name="Photo" w="1600" h="1200" label="TEXTURE: jute hessian cloth, background" alt="" fill="true" hint-size="100%,100%"></dc-import></div>
+<div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px);position:relative"><div style="margin-bottom:40px;max-width:720px"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:16px">Ingredients wall</div><h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#2E4A1F;">Six things we never <span style="color:#B8841E;font-style:italic">compromise</span> on</h2></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px"><sc-for list="{{ ings }}" as="g" hint-placeholder-count="6"><article data-reveal data-delay="{{ g.delay }}" onMouseEnter="{{ g.enter }}" onMouseLeave="{{ g.leave }}" onClick="{{ g.tap }}" style="position:relative;overflow:hidden;border-radius:2px;background:#E9E1CF;cursor:pointer"><dc-import name="Photo" w="800" h="800" label="{{ g.label }}" alt="{{ g.alt }}" hint-size="100%,280px"></dc-import>
+<div style="{{ g.veil }}"><div style="font:400 16px/1.55 var(--f-body)">{{ g.note }}</div></div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;background:#FAF5E6;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #D9CCAC"><div><span style="font:400 22px/1 var(--f-hi);color:#A5432A">{{ g.hi }}</span><div style="font:600 18px/1.2 var(--f-body)">{{ g.en }}</div></div><div style="font:500 13px/1.3 var(--f-body);color:#5A4A36;text-align:right">{{ g.origin }}</div></div></article></sc-for></div></div></section>
+
+<!-- ============ 11 · FIND YOUR FLAVOUR ============ SECTION quiz · schema: questions[heading, options[image,label]], result mapping to product handle · scheme-2 -->
+<section style="padding:clamp(56px,8vw,96px) 0;background:#2E4A1F;color:#F4EBD6" data-dark><div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(28px,5vw,80px);align-items:center">
+<div><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#E2B450;margin-bottom:16px">Find your flavour</div><h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#F4EBD6;margin-bottom:20px">Three questions, one <span style="color:#E2B450;font-style:italic">jar</span></h2><p style="margin:0;max-width:400px;font:400 18px/1.65 var(--f-body);color:#E4EAD2">Tap the picture that looks most like your table. We will suggest where to start.</p></div>
+<div id="quiz-card" style="background:#FAF5E6;color:#2A1D12;padding:clamp(20px,3vw,40px);border-radius:2px;display:flex;flex-direction:column;gap:20px;min-height:380px;justify-content:center">
+<sc-if value="{{ qIn }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:6px" aria-hidden="true"><sc-for list="{{ qBars }}" as="b" hint-placeholder-count="3"><span style="{{ b.s }}"></span></sc-for></div><div style="font:500 var(--t-h3)/1.2 var(--f-sub)">{{ qCur.q }}</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px"><sc-for list="{{ qCur.opts }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.click }}" style="padding:0;border:2px solid #D9CCAC;background:#fff;border-radius:2px;text-align:left;overflow:hidden;transition:border-color .3s" style-hover="border-color:#2E4A1F"><dc-import name="Photo" w="500" h="500" label="{{ o.label }}" alt="{{ o.l }}" nodims="true" hint-size="100%,120px"></dc-import><div style="padding:10px 12px;font:600 14px/1.25 var(--f-body)">{{ o.l }}</div></button></sc-for></div></sc-if>
+<sc-if value="{{ qDone }}" hint-placeholder-val="{{ false }}"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;">Your match</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:20px;align-items:center"><div style="display:grid;grid-template-columns:minmax(0,1fr);max-width:280px"><sc-if value="{{ qIsProd }}" hint-placeholder-val="{{ true }}"><dc-import name="ProductCard" product="{{ qCard }}" onAdd="{{ addFn }}" hint-size="100%,480px" style="display:flex;flex:1;min-width:0"></dc-import></sc-if><sc-if value="{{ qIsGift }}" hint-placeholder-val="{{ false }}"><dc-import name="Photo" w="600" h="750" label="{{ qRec.label }}" alt="{{ qRec.name }}" hint-size="100%,300px"></dc-import></sc-if></div><div><div style="font:500 var(--t-h3)/1.2 var(--f-sub);color:#2E4A1F">{{ qRec.name }}</div><p style="margin:10px 0 18px;font:400 15px/1.6 var(--f-body);color:#4A3A28">{{ qRec.note }}</p><div style="display:flex;gap:10px;flex-wrap:wrap"><sc-if value="{{ qIsGift }}" hint-placeholder-val="{{ false }}"><button onClick="{{ qAdd }}" style="{{ btnP }}">{{ qRec.cta }}</button></sc-if><button onClick="{{ qReset }}" style="{{ btnS }}">Retake</button></div></div></div></sc-if></div></div></section>
+
+<!-- ============ 12 · PAIR IT PERFECTLY ============ SECTION pairing · schema: blocks[dish image, product, tip] -->
+<section style="padding:clamp(56px,8vw,96px) 0;background:#F4EBD6"><div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px);">
+<div style="margin-bottom:32px;max-width:720px"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:16px">Pair it perfectly</div><h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#2E4A1F;">What is on the plate <span style="color:#B8841E;font-style:italic">tonight</span>?</h2></div>
+<div role="tablist" aria-label="Dish" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px"><sc-for list="{{ dishTiles }}" as="d" hint-placeholder-count="5"><button role="tab" aria-selected="{{ d.on }}" onClick="{{ d.click }}" style="{{ d.s }}"><dc-import name="Photo" w="400" h="400" label="{{ d.label }}" alt="{{ d.l }}" nodims="true" hint-size="100%,130px"></dc-import><div style="padding:12px;font:600 16px/1.2 var(--f-body);text-align:left">{{ d.l }}</div></button></sc-for></div>
+<div id="pair-panel" role="tabpanel" style="background:#2A1D12;color:#F4EBD6;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:clamp(20px,4vw,48px);align-items:center;padding:clamp(20px,3vw,40px);border-radius:2px"><div style="display:grid;grid-template-columns:minmax(0,1fr);max-width:280px"><dc-import name="ProductCard" dark="true" product="{{ pairCard }}" onAdd="{{ addFn }}" hint-size="100%,480px" style="display:flex;flex:1;min-width:0"></dc-import></div>
+<div><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#E2B450;margin-bottom:12px">With {{ pairCur.dish }}</div><div style="font:400 var(--t-h2)/1.1 var(--f-head);margin-bottom:12px">{{ pairCur.pname }}</div><p style="margin:0 0 20px;max-width:460px;font:400 17px/1.65 var(--f-body);color:#E8E0C8">{{ pairCur.tip }}</p></div></div>
+</div></section>
+
+<!-- ============ 13 · PURE VS ORDINARY ============ SECTION image-comparison · schema: before_image, after_image, rows[], checklist[] -->
+<section style="padding:clamp(56px,8vw,96px) 0;background:#2A1D12;color:#F4EBD6" data-dark><div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px);">
+<div style="margin-bottom:40px;max-width:720px"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#E2B450;margin-bottom:16px">Pure vs ordinary</div><h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#F4EBD6;">Drag to compare the <span style="color:#E2B450;font-style:italic">ghee</span></h2></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(24px,5vw,72px);align-items:center">
+<div style="position:relative;overflow:hidden;border-radius:2px;user-select:none;touch-action:pan-y"><dc-import name="Photo" w="1200" h="1000" label="ORDINARY: store-bought ghee, bright yellow, smooth" alt="Ordinary store-bought ghee in a steel bowl" hint-size="100%,360px"></dc-import>
+<div style="{{ cmpClip }}"><dc-import name="Photo" w="1200" h="1000" label="GRAMEEN: bilona ghee, pale gold, granular" alt="Grameen bilona ghee in a brass bowl" fill="true" hint-size="100%,360px"></dc-import></div>
+<span style="position:absolute;left:12px;top:12px;background:#2E4A1F;color:#F4EBD6;padding:7px 10px;border-radius:2px;font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase">Grameen</span><span style="position:absolute;right:12px;top:12px;background:#FAF5E6;color:#2A1D12;padding:7px 10px;border-radius:2px;font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase">Ordinary</span>
+<div style="{{ cmpHandle }}"><div style="width:48px;height:48px;border-radius:50%;background:#E2B450;color:#2A1D12;display:grid;place-items:center;flex:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"></path></svg></div></div>
+<input type="range" min="0" max="100" value="{{ cmp }}" onInput="{{ onCmp }}" aria-label="Compare Grameen ghee with ordinary ghee" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0"></input></div>
+<div><div style="border-top:1px solid rgba(244,235,214,.4)"><sc-for list="{{ cmpRows }}" as="r" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:90px 1fr 1fr;gap:12px;padding:16px 0;border-bottom:1px solid rgba(244,235,214,.2);font:500 15px/1.4 var(--f-body)"><span style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#E2B450;padding-top:3px">{{ r.k }}</span><span>{{ r.a }}</span><span style="color:#C9BFA2">{{ r.b }}</span></div></sc-for></div>
+<ul style="list-style:none;margin:28px 0 0;padding:0;display:grid;gap:12px"><sc-for list="{{ cmpChecks }}" as="c" hint-placeholder-count="3"><li style="display:flex;gap:12px;font:600 17px/1.4 var(--f-body)"><span style="color:#E2B450;display:flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px"><path d="M4 12.500l5 5L20 6.500"></path></svg></span>{{ c }}</li></sc-for></ul></div></div>
+</div></section>
+
+<!-- ============ 15 · PRODUCT SPOTLIGHT ============ SECTION featured-product · schema: product, show_pincode, benefits[] · {{ product.media }}, {{ product.variants }}, form 'product' -->
+<section id="spotlight" style="padding:clamp(56px,8vw,96px) 0;background:#F4EBD6;border-top:1px solid #D9CCAC">
+  <div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(24px,5vw,72px);align-items:start">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:12px">
+      <div style="grid-column:1/-1;overflow:hidden;border-radius:2px"><dc-import name="Photo" w="1200" h="1400" label="{{ spot.main }}" alt="A2 Gir Cow Ghee product gallery" eager="true" hint-size="100%,500px"></dc-import></div>
+      <sc-for list="{{ thumbs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.click }}" aria-label="{{ t.alt }}" aria-pressed="{{ t.on }}" style="{{ t.s }}"><dc-import name="Photo" w="300" h="350" label="{{ t.label }}" nodims="true" hint-size="100%,90px"></dc-import></button></sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:20px;position:sticky;top:96px">
+      <div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10">Featured · New</div>
+      <h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h1)/1.02 var(--f-head);letter-spacing:-.02em;color:#2E4A1F">A2 Gir Cow Ghee</h2>
+      <div style="display:flex;align-items:center;gap:10px;font:500 14px var(--f-body);color:#4A3A28"><span style="display:flex;gap:2px"><sc-for list="{{ stars }}" as="s" hint-placeholder-count="5"><svg width="15" height="15" viewBox="0 0 22 22"><path d="M11 1.500l2.900 6.300 6.800.7-5.100 4.600 1.500 6.700L11 16.300 4.900 19.800l1.500-6.700L1.300 8.500l6.800-.7Z" fill="#B8841E"></path></svg></sc-for></span><span style="font-variant-numeric:tabular-nums">4.9 · 604 reviews</span></div>
+      <div style="display:flex;align-items:baseline;gap:12px;font-variant-numeric:tabular-nums"><span style="font:700 30px var(--f-body);color:#2E4A1F">{{ spot.price }}</span><s style="font:400 16px var(--f-body);color:#6B5B45">{{ spot.cmp }}</s><span style="font:600 12px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;background:#2E4A1F;color:#F4EBD6;padding:6px 8px;border-radius:2px">Save 10%</span></div>
+      <p style="margin:0;font:400 17px/1.65 var(--f-body);color:#4A3A28">Churned from the curd of Gir cow milk, simmered slowly until it smells of roasted nuts. Soft, sweet and golden.</p>
+      <div><div style="font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px">Size</div><div style="display:flex;gap:8px;flex-wrap:wrap" role="group" aria-label="Size"><sc-for list="{{ spVars }}" as="v" hint-placeholder-count="3"><button onClick="{{ v.click }}" aria-pressed="{{ v.on }}" style="{{ v.s }}">{{ v.l }}</button></sc-for></div></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;border:1px solid #2A1D12;border-radius:2px;height:52px"><button onClick="{{ spDec }}" aria-label="Decrease quantity" style="width:48px;height:50px;border:0;background:transparent;color:#2A1D12"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14"></path></svg></button><span style="min-width:32px;text-align:center;font:600 16px var(--f-body);font-variant-numeric:tabular-nums" aria-live="polite">{{ spQty }}</span><button onClick="{{ spInc }}" aria-label="Increase quantity" style="width:48px;height:50px;border:0;background:transparent;color:#2A1D12"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></div>
+        <button onClick="{{ spAdd }}" style="{{ btnP }};flex:1;min-width:200px" style-hover="gap:18px;background:#2A1D12;color:#F4EBD6">Add to cart</button>
+      </div>
+      <ul style="list-style:none;margin:0;padding:20px 0 0;border-top:1px solid #D9CCAC;display:grid;gap:10px"><sc-for list="{{ benefits }}" as="b" hint-placeholder-count="4"><li style="display:flex;gap:12px;font:500 15px/1.4 var(--f-body)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E4A1F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:1px"><path d="M4 12.500l5 5L20 6.500"></path></svg>{{ b }}</li></sc-for></ul>
+      <form onSubmit="{{ checkPin }}" style="padding:20px;background:#FAF5E6;border:1px solid #D9CCAC;border-radius:2px;display:grid;gap:10px">
+        <label for="pin" style="font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase">Check delivery</label>
+        <div style="display:flex;gap:8px"><input id="pin" inputmode="numeric" maxlength="6" value="{{ pin }}" onInput="{{ onPin }}" placeholder="Enter pincode" style="flex:1;min-width:0;height:52px;border:1px solid #2A1D12;border-radius:2px;background:#fff;padding:0 16px;font:500 16px var(--f-body);font-variant-numeric:tabular-nums"></input><button type="submit" style="{{ btnOutline }};width:auto;padding:0 24px">Check</button></div>
+        <div aria-live="polite" style="{{ pinS }}">{{ pinMsg }}</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 16 · BUILD YOUR HAMPER ============ SECTION hamper-builder · schema: boxes[], products (collection), max_items, occasions[] · POST /cart/add.js (items[]) -->
+<section id="hamper" style="padding:clamp(56px,8vw,96px) 0;background:#2E4A1F;color:#F4EBD6" data-dark><div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px);">
+<div style="margin-bottom:40px;max-width:760px"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#E2B450;margin-bottom:16px">Gift sets · Diwali, Rakhi, weddings</div><h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#F4EBD6;">Build a hamper they will <span style="color:#E2B450;font-style:italic">remember</span></h2></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(24px,4vw,56px);align-items:start">
+<div style="display:flex;flex-direction:column;gap:36px">
+<div><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#E2B450;margin-bottom:14px">1 · Choose a box</div><div role="radiogroup" aria-label="Box" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px"><sc-for list="{{ boxes }}" as="b" hint-placeholder-count="3"><button role="radio" aria-checked="{{ b.on }}" onClick="{{ b.click }}" style="{{ b.s }}"><dc-import name="Photo" w="400" h="300" label="{{ b.label }}" alt="{{ b.l }}" nodims="true" hint-size="100%,100px"></dc-import><div style="padding:10px 12px;text-align:left"><div style="font:600 16px/1.2 var(--f-body)">{{ b.l }}</div><div style="font:500 13px var(--f-body);font-variant-numeric:tabular-nums">{{ b.price }}</div></div></button></sc-for></div></div>
+<div><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#E2B450;margin-bottom:14px">2 · Pick three jars <span style="color:#F4EBD6">({{ hcount }} of 3)</span></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:16px;align-items:stretch"><sc-for list="{{ hitems }}" as="h" hint-placeholder-count="6"><div style="display:grid;grid-template-columns:minmax(0,1fr)"><dc-import name="ProductCard" product="{{ h.data }}" onAdd="{{ h.add }}" dark="true" cta="Add to hamper" ctaSel="Remove" selected="{{ h.on }}" disabled="{{ h.dis }}" nosizes="true" hint-size="100%,460px" style="display:flex;flex:1;min-width:0"></dc-import></div></sc-for></div></div></div>
+<div style="background:#FAF5E6;color:#2A1D12;padding:clamp(20px,3vw,36px);border-radius:2px;position:sticky;top:96px;display:flex;flex-direction:column;gap:18px"><div style="font:500 26px/1.2 var(--f-sub)">Your hamper</div>
+<div><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:10px">Occasion card</div><div role="radiogroup" aria-label="Occasion" style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ occs }}" as="o" hint-placeholder-count="3"><button role="radio" aria-checked="{{ o.on }}" onClick="{{ o.click }}" style="{{ o.s }}">{{ o.l }}</button></sc-for></div><div style="font:400 32px/1.2 var(--f-hand);color:#A5432A;margin-top:12px;transform:rotate(-1.5deg);transform-origin:left">{{ hGreet }}</div></div>
+<div style="border-top:1px solid #D9CCAC">
+<div style="display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #D9CCAC;font:500 15px var(--f-body)"><span>{{ hBox.name }}</span><span style="font-variant-numeric:tabular-nums">{{ hBox.price }}</span></div>
+<sc-for list="{{ hLines }}" as="l" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #D9CCAC;font:500 15px var(--f-body)"><span>{{ l.name }}</span><span style="font-variant-numeric:tabular-nums">{{ l.price }}</span></div></sc-for>
+<sc-if value="{{ hNone }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 0;font:400 15px var(--f-body);color:#5A4A36">No jars picked yet.</div></sc-if></div>
+<div style="display:flex;justify-content:space-between;font:700 20px var(--f-body);font-variant-numeric:tabular-nums"><span>Total</span><span>{{ hTotal }}</span></div>
+<button onClick="{{ hAdd }}" style="{{ hBtn }}">Add hamper to cart</button></div>
+</div></div></section>
+
+<!-- ============ 17 · JAR WALL OF LOVE ============ SECTION reviews-board · schema: background_image, blocks[quote, name, product, rating, note] · app block: Judge.me / Loox -->
+<section style="padding:clamp(56px,8vw,96px) 0;background:#2A1D12;position:relative;overflow:hidden">
+<!-- BACKGROUND PHOTO PLACEHOLDER: aged wooden board -->
+<div aria-hidden="true" style="position:absolute;inset:0;opacity:.5"><dc-import name="Photo" w="1600" h="1200" label="TEXTURE: aged wooden board, background" alt="" fill="true" hint-size="100%,100%"></dc-import></div><div aria-hidden="true" style="position:absolute;inset:0;background:rgba(42,29,18,.5)"></div>
+<div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px);position:relative"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:48px;color:#F4EBD6"><div><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#E2B450;margin-bottom:16px">Jar wall of love</div><h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#F4EBD6;">Pinned up by our <span style="color:#E2B450;font-style:italic">customers</span></h2></div><div style="display:flex;align-items:center;gap:14px"><div style="font:400 44px/1 var(--f-head);color:#E2B450;font-variant-numeric:tabular-nums">4.9</div><div style="font:500 14px/1.4 var(--f-body)">from 2,140 verified buyers</div></div></div>
+<div style="{{ wallS }}"><sc-for list="{{ wall }}" as="r" hint-placeholder-count="6"><figure style="{{ r.wrap }}"><div style="{{ r.s }}" style-hover="transform:rotate(0deg) translateY(-4px)"><span style="position:absolute;left:50%;top:-8px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:#A5432A;box-shadow:inset -2px -2px 0 rgba(0,0,0,.25),0 2px 3px rgba(0,0,0,.3)"></span>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="display:flex;gap:2px"><sc-for list="{{ stars }}" as="s" hint-placeholder-count="5"><svg width="15" height="15" viewBox="0 0 22 22"><path d="M11 1.500l2.900 6.300 6.800.7-5.100 4.600 1.500 6.700L11 16.300 4.900 19.800l1.500-6.700L1.300 8.500l6.800-.7Z" fill="#B8841E"></path></svg></sc-for></span><span style="display:flex;align-items:center;gap:5px;font:600 11px/1 var(--f-label);letter-spacing:.1em;text-transform:uppercase;color:#2E4A1F"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.500l3 3 5-6"></path></svg>Verified</span></div>
+<blockquote style="margin:14px 0 10px;font:italic 500 21px/1.4 var(--f-head)">{{ r.text }}</blockquote><div style="font:400 32px/1.1 var(--f-hand);color:#A5432A;transform:rotate(-2deg);transform-origin:left;margin-bottom:12px">{{ r.flourish }}</div><figcaption style="font:500 13px/1.4 var(--f-body);color:#4A3A28;padding-top:12px;border-top:1px dashed #BDB090"><strong style="font-weight:600">{{ r.who }}</strong> · {{ r.item }}</figcaption></div></figure></sc-for></div></div></section>
+
+<!-- ============ 11 · JOURNAL ============ SECTION featured-blog · schema: blog, post_limit · {% for article in blog.articles %} -->
+<section id="journal" style="padding:clamp(56px,8vw,96px) 0;background:#FAF5E6;border-top:1px solid #D9CCAC">
+  <div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px)">
+    <div style="margin-bottom:40px"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:16px">From our kitchen</div><h2 data-mask style="max-width:34ch;margin:0;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#2E4A1F">Recipes and <span style="color:#B8841E;font-style:italic">notes</span></h2></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:32px 24px">
+      <sc-for list="{{ posts }}" as="a" hint-placeholder-count="3"><article data-reveal data-delay="{{ a.delay }}" onMouseEnter="{{ a.enter }}" onMouseLeave="{{ a.leave }}"><a href="#journal" style="display:block;color:#2A1D12"><div style="overflow:hidden;border-radius:2px"><div style="{{ a.zoom }}"><dc-import name="Photo" w="1200" h="900" label="{{ a.label }}" alt="{{ a.alt }}" hint-size="100%,240px"></dc-import></div></div><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin:20px 0 10px;font-variant-numeric:tabular-nums">{{ a.date }}</div><h3 style="margin:0 0 12px;font:500 26px/1.2 var(--f-sub)">{{ a.t }}</h3><span style="font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:#2E4A1F;border-bottom:1px solid #2E4A1F;padding-bottom:6px">Read more</span></a></article></sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 · INSTAGRAM ============ SECTION instagram-feed · schema settings: eyebrow, heading, handle, follow_url, color_scheme · blocks (max 6): post [image, link, alt] -->
+<section id="instagram" style="padding:clamp(56px,8vw,96px) 0;background:#F4EBD6;border-top:1px solid #D9CCAC"><div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px)">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,48px)"><div><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:16px">Instagram · @grameen.foods</div><h2 data-mask style="margin:0;max-width:24ch;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#2E4A1F">On your <span style="color:#B8841E;font-style:italic">tables</span></h2></div>
+<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap"><p style="margin:0;max-width:30ch;font:400 15px/1.6 var(--f-body);color:rgba(42,29,18,.7)">Tag your jar with #TasteOurPurity and we will feature your table.</p><a href="#instagram" onMouseEnter="{{ igLinkIn }}" onMouseLeave="{{ igLinkOut }}" style="display:inline-flex;align-items:center;gap:10px;white-space:nowrap;min-height:48px;padding:0 20px;border:1px solid #2E4A1F;color:#2E4A1F;font:600 14px/1 var(--f-body);letter-spacing:.04em"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3.500" y="3.500" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17" cy="7" r=".6" fill="currentColor"></circle></svg>Follow on Instagram<span style="{{ igArrowS }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></span></a></div></div>
+</div>
+<div style="{{ igWrapS }}"><div style="{{ igGridS }}">
+<sc-for list="{{ igTiles }}" as="u" hint-placeholder-count="6"><a href="#instagram" aria-label="{{ u.alt }}" onMouseEnter="{{ u.enter }}" onMouseLeave="{{ u.leave }}" onFocus="{{ u.enter }}" onBlur="{{ u.leave }}" style="position:relative;display:block;flex:none;width:{{ igTileW }};aspect-ratio:1/1;overflow:hidden;background:#EDE4CE;scroll-snap-align:start"><dc-import name="Photo" w="800" h="800" label="{{ u.label }}" alt="{{ u.alt }}" fill="true" hint-size="100%,100%"></dc-import><div style="{{ u.ov }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F4EBD6" stroke-width="1.5" stroke-linecap="round"><rect x="3.500" y="3.500" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17" cy="7" r=".6" fill="#F4EBD6"></circle></svg><span style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#F4EBD6">View post</span></div></a></sc-for>
+</div></div></section>
+
+<!-- ============ 13 · FAQ ============ SECTION collapsible-content · schema settings: eyebrow, heading, intro, contact_label, whatsapp_url, email, color_scheme · blocks: row [question, answer] · a11y: button aria-expanded + aria-controls, region aria-labelledby -->
+<section id="faq" style="padding:clamp(56px,8vw,96px) 0;background:#F4EBD6;border-top:1px solid #D9CCAC"><div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px)"><div style="{{ fGridS }}">
+<div style="{{ fLS }}"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:16px">Questions</div><h2 data-mask style="margin:0 0 16px;max-width:24ch;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#2E4A1F">Everything you might <span style="color:#B8841E;font-style:italic">ask</span></h2><p style="margin:0 0 32px;max-width:36ch;font:400 16px/1.65 var(--f-body);color:rgba(42,29,18,.7)">Shelf life, shipping, storage and how we make it. If your question is not here, we answer fast.</p>
+<div style="border:1px solid #D9CCAC;padding:24px;max-width:380px"><div style="font:500 22px/1.2 var(--f-sub)">Still have a question?</div><p style="margin:8px 0 20px;font:400 14px/1.6 var(--f-body);color:rgba(42,29,18,.7)">We reply within a few hours, Monday to Saturday, 9 to 6.</p><div style="display:flex;flex-direction:column;gap:10px"><a href="https://wa.me/910000000000" style="{{ faqWa }}" style-hover="background:#2A1D12;border-color:#2A1D12;color:#F4EBD6">Chat on WhatsApp</a><a href="mailto:hello@grameen.in" style="display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-height:52px;border:1px solid #2A1D12;color:#2A1D12;font:600 14px/1 var(--f-body);letter-spacing:.04em" style-hover="background:#2A1D12;color:#F4EBD6">hello@grameen.in</a></div></div></div>
+<div id="faq-list" onKeyDown="{{ fqKey }}" style="{{ fRS }}">
+<sc-for list="{{ faqRows }}" as="f" hint-placeholder-count="6"><div style="position:relative;border-bottom:1px solid #D9CCAC"><span aria-hidden="true" style="{{ f.bar }}"></span><h3 style="margin:0"><button id="{{ f.bid }}" onClick="{{ f.click }}" aria-expanded="{{ f.open }}" aria-controls="{{ f.pid }}" style="{{ f.btn }}"><span style="font:600 12px/1 var(--f-label);letter-spacing:.14em;color:rgba(42,29,18,.55);font-variant-numeric:tabular-nums">{{ f.n }}</span><span style="{{ f.qS }}">{{ f.q }}</span><span style="{{ f.icoBox }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="{{ f.ico }}"><path d="M12 5v14M5 12h14"></path></svg></span></button></h3>
+<div id="{{ f.pid }}" role="region" aria-labelledby="{{ f.bid }}" style="{{ f.wrap }}"><div style="overflow:hidden"><p style="{{ f.aS }}">{{ f.a }}</p></div></div></div></sc-for></div>
+</div></div></section>
+
+<!-- ============ 14 · NEWSLETTER ============ SECTION newsletter · schema settings: eyebrow, heading, text, image, offer_title, offer_code, consent_text, color_scheme (scheme-2) · {% form 'customer' %} -->
+<section style="background:#2E4A1F;color:#F4EBD6" data-dark><div style="max-width:1320px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(16px,2.2vw,24px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(32px,6vw,96px);align-items:center">
+<div style="max-width:560px"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#E2B450;margin-bottom:16px">The Grameen letter</div>
+<h2 data-mask style="margin:0 0 16px;max-width:20ch;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#F4EBD6">A recipe in your inbox, every other <span style="color:#E2B450;font-style:italic">Sunday</span></h2>
+<p style="margin:0 0 32px;max-width:44ch;font:400 17px/1.65 var(--f-body);color:rgba(244,235,214,.8)">Join for seasonal batch alerts and one recipe worth repeating. Your first jar is 10% off.</p>
+<sc-if value="{{ nlOpen }}" hint-placeholder-val="{{ true }}"><form onSubmit="{{ subscribe }}"><label for="nl-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+<div style="display:flex;flex-wrap:wrap;gap:0"><input id="nl-email" type="email" required value="{{ email }}" onInput="{{ onEmail }}" placeholder="Your email address" style="flex:1 1 220px;min-width:0;height:56px;border:1px solid rgba(244,235,214,.5);border-right:0;border-radius:0;background:transparent;color:#F4EBD6;padding:0 20px;font:400 16px var(--f-body)"></input><button type="submit" style="{{ nlBtn }}" onMouseEnter="{{ nlIn }}" onMouseLeave="{{ nlOut }}"><span>Subscribe</span><span style="{{ nlArrow }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></span></button></div>
+<label style="display:flex;gap:12px;align-items:flex-start;margin-top:16px;font:400 13px/1.5 var(--f-body);color:rgba(244,235,214,.7)"><input type="checkbox" required style="width:20px;height:20px;margin:0;accent-color:#E2B450;flex:none"></input>I agree to receive emails from Grameen and can unsubscribe at any time. See our privacy policy.</label></form></sc-if>
+<sc-if value="{{ nlDone }}" hint-placeholder-val="{{ false }}"><div role="status" style="border-top:1px solid rgba(244,235,214,.3);border-bottom:1px solid rgba(244,235,214,.3);padding:20px 0"><div style="font:500 var(--t-h3)/1.2 var(--f-sub)">You are on the list.</div><div style="margin-top:6px;font:400 15px/1.6 var(--f-body);color:rgba(244,235,214,.8)">Use code <strong style="color:#E2B450;letter-spacing:.06em">FIRSTJAR10</strong> at checkout for 10% off your first jar.</div></div></sc-if>
+<ul style="list-style:none;margin:32px 0 0;padding:0;display:grid;gap:12px"><sc-for list="{{ nlPerks }}" as="p" hint-placeholder-count="3"><li style="display:flex;gap:12px;font:500 15px/1.4 var(--f-body)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E2B450" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px"><path d="M4 12.500l5 5L20 6.500"></path></svg>{{ p }}</li></sc-for></ul></div>
+<div style="position:relative"><div style="aspect-ratio:4/5;overflow:hidden;background:#EDE4CE;max-height:640px"><dc-import name="Photo" w="1200" h="1500" label="NEWSLETTER: open jar of ghee beside fresh bread, overhead" alt="An open jar of ghee next to fresh bread, shot from above" fill="true" hint-size="100%,420px"></dc-import></div>
+<div style="position:absolute;left:0;bottom:0;background:#FAF5E6;color:#2A1D12;padding:16px 20px;min-width:200px"><div style="font:600 11px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#A5432A">First jar</div><div style="margin-top:8px;font:400 32px/1 var(--f-head)">10% off</div><div style="margin-top:6px;font:500 13px/1.3 var(--f-body);color:rgba(42,29,18,.7)">{{ nlCode }}</div></div></div>
+</div></section>
+</main>
+
+<!-- ============ 15 · FOOTER ============ SECTION footer · schema: logo, text, menus, social, payment_type_svg_tag, fssai -->
+<footer style="background:#D9CCAC;color:#2A1D12;padding:clamp(48px,6vw,80px) 0 24px">
+  <div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:40px 32px">
+      <div style="min-width:240px;grid-column:span 2"><img src="assets/grameen-logo.png" width="320" height="256" alt="Grameen, Taste Our Purity" loading="lazy" style="width:200px;height:auto;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.1)"></img><p style="margin:16px 0 0;max-width:340px;font:400 15px/1.6 var(--f-body)">Ghee and pickles made in village kitchens, tested in a lab, delivered across India.</p><div style="display:flex;gap:4px;margin-top:16px">
+        <a href="#top" aria-label="Instagram" style="width:44px;height:44px;display:grid;place-items:center;color:#2A1D12"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3.500" y="3.500" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17" cy="7" r=".6" fill="currentColor"></circle></svg></a>
+        <a href="#top" aria-label="YouTube" style="width:44px;height:44px;display:grid;place-items:center;color:#2A1D12"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2.500" y="5.500" width="19" height="13" rx="4"></rect><path d="M10 9.500v5l4.500-2.500Z"></path></svg></a>
+        <a href="#top" aria-label="Facebook" style="width:44px;height:44px;display:grid;place-items:center;color:#2A1D12"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8.500"></path></svg></a></div></div>
+      <sc-for list="{{ fcols }}" as="c" hint-placeholder-count="2"><div><div style="font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px">{{ c.h }}</div><div style="display:flex;flex-direction:column"><sc-for list="{{ c.links }}" as="l" hint-placeholder-count="4"><a href="{{ l.href }}" style="min-height:36px;display:flex;align-items:center;color:#2A1D12;font:500 15px var(--f-body)" style-hover="color:#2E4A1F">{{ l.t }}</a></sc-for></div></div></sc-for>
+      <div><div style="font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px">Contact</div><div style="font:500 15px/1.8 var(--f-body)">hello@grameen.in<br><span style="font-variant-numeric:tabular-nums">+91 00000 00000</span><br>Mon to Sat, 9 to 6</div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:48px;padding-top:20px;border-top:1px solid rgba(42,30,20,.3)">
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ pays }}" as="p" hint-placeholder-count="5"><div style="width:48px;height:30px;overflow:hidden;border-radius:2px"><dc-import name="Photo" w="96" h="60" label="{{ p }}" alt="{{ p }} accepted" nodims="true" hint-size="48px,30px"></dc-import></div></sc-for></div>
+      <div style="font:400 13px/1.5 var(--f-body)">FSSAI Lic. No. 00000000000000 (placeholder) · © 2026 Grameen</div>
+    </div>
+  </div>
+</footer>
+
+<a href="https://wa.me/910000000000" aria-label="Order on WhatsApp" style="position:fixed;right:16px;bottom:16px;z-index:80;width:56px;height:56px;border-radius:50%;background:#2E4A1F;color:#F4EBD6;display:grid;place-items:center;box-shadow:0 2px 10px rgba(42,30,20,.3)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.200-4A8 8 0 1 1 8 18.800Z"></path><path d="M9 9.500c.5 2.500 2.500 4.500 5 5l1.200-1.200-1.700-1-.8.6a3.500 3.500 0 0 1-1.600-1.600l.6-.8-1-1.700Z"></path></svg></a>
+
+<!-- CART DRAWER · SECTION cart-drawer · {{ cart.items }}, {{ cart.total_price | money }}, /cart/change.js, cart.note -->
+<div onClick="{{ closeAll }}" style="{{ scrimS }}"></div>
+<aside id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart" style="{{ drawerS }}">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid #D9CCAC"><div style="font:500 26px/1.2 var(--f-sub)">Cart <span style="font:500 15px var(--f-body);color:#5A4A36;font-variant-numeric:tabular-nums">({{ count }})</span></div><button onClick="{{ closeAll }}" aria-label="Close cart" style="width:44px;height:44px;border:0;background:transparent"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"></path></svg></button></div>
+  <div style="padding:16px 24px 0"><div style="font:600 13px/1.3 var(--f-body)">{{ shipMsg }}</div><div style="height:4px;background:#D9CCAC;margin-top:10px"><div style="{{ shipBar }}"></div></div></div>
+  <div style="flex:1;overflow:auto;padding:8px 24px">
+    <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:48px 0;text-align:center;font:500 24px/1.2 var(--f-sub);color:#5A4A36">Your cart is empty.<div style="margin-top:20px"><a href="#best-sellers" onClick="{{ closeAll }}" style="{{ btnP }}">Shop best sellers</a></div></div></sc-if>
+    <sc-for list="{{ lines }}" as="l" hint-placeholder-count="2"><div style="display:flex;gap:16px;padding:18px 0;border-bottom:1px solid #D9CCAC"><div style="width:72px;flex:none;overflow:hidden;border-radius:2px"><dc-import name="Photo" w="144" h="180" label="IMG" nodims="true" hint-size="72px,90px"></dc-import></div><div style="flex:1;display:flex;flex-direction:column;gap:4px"><div style="font:600 18px/1.15 var(--f-body)">{{ l.name }}</div><div style="font:500 13px var(--f-body);color:#5A4A36">{{ l.size }}</div><div style="display:inline-flex;align-items:center;border:1px solid #2A1D12;border-radius:2px;align-self:flex-start;margin-top:6px"><button onClick="{{ l.dec }}" aria-label="Decrease quantity" style="width:44px;height:36px;border:0;background:transparent;color:#2A1D12"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 12h14"></path></svg></button><span style="min-width:24px;text-align:center;font:600 14px var(--f-body);font-variant-numeric:tabular-nums">{{ l.qty }}</span><button onClick="{{ l.inc }}" aria-label="Increase quantity" style="width:44px;height:36px;border:0;background:transparent;color:#2A1D12"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></div></div><div style="font:700 15px var(--f-body);color:#2E4A1F;font-variant-numeric:tabular-nums">{{ l.total }}</div></div></sc-for>
+    <div style="padding:20px 0 8px"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:12px">Goes well with</div>
+      <div style="display:flex;gap:14px;align-items:center;padding:12px;border:1px solid #D9CCAC;background:#FAF5E6;border-radius:2px"><div style="width:56px;flex:none;overflow:hidden;border-radius:2px"><dc-import name="Photo" w="112" h="140" label="IMG" nodims="true" hint-size="56px,70px"></dc-import></div><div style="flex:1"><div style="font:600 16px/1.15 var(--f-body)">Aam Ka Achaar</div><div style="font:600 14px var(--f-body);color:#2E4A1F;font-variant-numeric:tabular-nums">₹360</div></div><button onClick="{{ addUpsell }}" style="min-height:44px;padding:0 16px;border:1px solid #2A1D12;border-radius:2px;background:transparent;font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase">Add</button></div></div>
+    <div style="padding:12px 0"><label for="cart-note" style="font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase">Order note</label><textarea id="cart-note" rows="2" value="{{ note }}" onInput="{{ onNote }}" placeholder="Gift message or delivery instructions" style="width:100%;margin-top:10px;border:1px solid #2A1D12;border-radius:2px;background:#fff;padding:12px;font:400 15px var(--f-body);resize:vertical"></textarea></div>
+  </div>
+  <div style="padding:20px 24px calc(20px + env(safe-area-inset-bottom));border-top:1px solid #D9CCAC;background:#FAF5E6"><div style="display:flex;justify-content:space-between;font:600 17px var(--f-body);margin-bottom:6px;font-variant-numeric:tabular-nums"><span>Subtotal</span><span>{{ subtotal }}</span></div><div style="font:400 13px var(--f-body);color:#5A4A36;margin-bottom:16px">Taxes included. Shipping calculated at checkout.</div><button style="{{ btnP }};width:100%" style-hover="background:#2A1D12;color:#F4EBD6">Checkout</button></div>
+</aside>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { vil: 0, vlink: false, bil: 0, bilTab: 'ghee', cal: new Date().getMonth(), cnotify: -1, cview: false, nlh: false, cta: false, qs: 0, qa: [], dish: 'dal', cmp: 50, hot: -1, box: 0, ham: [], occ: 0, pre: true, mob: false, sc: false, ann: 0, annX: false, mega: false, search: false, q: '', menu: false, cart: false, items: [], note: '', sel: {}, hov: '', tp: 0, faq: 0, thumb: 0, spV: 0, spQ: 1, pin: '', pinRes: null, batch: '', batchRes: null, nl: false, email: '' };
+  E = 'cubic-bezier(0.22,1,0.36,1)';
+  P = [
+    { id: 'g1', name: 'Bilona Cow Ghee', eyebrow: 'Bilona Ghee', desc: 'Slow-simmered bilona ghee', badge: 'Bestseller', rating: '4.9 (812)', sizes: [['100 ml', 260, 0], ['250 ml', 620, 0], ['500 ml', 1150, 1290], ['1 L', 2190, 2480]] },
+    { id: 'g2', name: 'A2 Gir Cow Ghee', eyebrow: 'A2 Cow Ghee', desc: 'Soft, sweet, floral aroma', badge: 'New', rating: '4.9 (604)', sizes: [['250 ml', 780, 0], ['500 ml', 1480, 1640], ['1 L', 2850, 3160]] },
+    { id: 'p1', name: 'Aam Ka Achaar', eyebrow: 'Pickle', desc: 'Raw mango, mustard oil, sun-cured', badge: '', rating: '4.8 (951)', sizes: [['400 g', 360, 425], ['800 g', 680, 800]] },
+    { id: 'p2', name: 'Nimbu Achaar', eyebrow: 'Pickle', desc: 'Salted lime, softened by the sun', badge: '', rating: '4.8 (540)', sizes: [['400 g', 320, 0]] },
+    { id: 'p3', name: 'Mixed Veg Achaar', eyebrow: 'Pickle', desc: 'Winter vegetables in mustard oil', badge: '', rating: '4.6 (318)', sizes: [['400 g', 340, 0], ['800 g', 640, 0]] },
+    { id: 'p4', name: 'Hari Mirch Achaar', eyebrow: 'Pickle', desc: 'Stuffed green chilli, serious heat', badge: 'New', available: false, rating: '4.7 (287)', sizes: [['300 g', 330, 0], ['600 g', 620, 0]] }
+  ];
+  card(p) { return { id: p.id, name: p.name, eyebrow: p.eyebrow, desc: p.desc, badge: p.badge, available: p.available !== false, sizes: p.sizes, l1: 'PRODUCT: ' + p.name + ' jar, studio', l2: 'HOVER: ' + p.name + ' in use', alt: p.name + ' jar on a cream background' }; }
+  m(n) { return '₹' + n.toLocaleString('en-IN'); }
+  BOX = [{ id: 'b1', name: 'Kraft box', sizes: [['Gift box', 150, 0]] }, { id: 'b2', name: 'Wooden crate', sizes: [['Gift box', 350, 0]] }, { id: 'b3', name: 'Jute potli', sizes: [['Gift box', 200, 0]] }];
+  prod(id) { return this.P.find(p => p.id === id) || this.BOX.find(p => p.id === id); }
+  addItem(id, si, q = 1) { this.lf = document.activeElement; this.setState(s => { const items = s.items.map(i => ({ ...i })); const f = items.find(i => i.id === id && i.si === si); if (f) f.qty += q; else items.push({ id, si, qty: q }); return { items, cart: true, menu: false, search: false }; }); }
+  chg(id, si, d) { this.setState(s => ({ items: s.items.map(i => (i.id === id && i.si === si) ? { ...i, qty: i.qty + d } : i).filter(i => i.qty > 0) })); }
+  zoom(on) { return `transition:transform 1.4s ${this.E};transform:scale(${on ? 1.06 : 1})`; }
+  renderVals() { const b = this.renderBase(); return { ...b, ...this.renderNew(), products: Array.from({ length: 12 }, (_, k) => ({ data: this.card(this.P[k % 6]), hid: k >= 6 })), bsCardW: (() => { const w = window.innerWidth, pad = w < 900 ? 16 : 24, cont = Math.min(w, 1320) - pad * 2, n = w >= 1100 ? 4 : w >= 768 ? 3 : 1.25, gap = w < 768 ? 16 : 24; return Math.floor((cont - (Math.ceil(n) - 1) * gap) / n) + 'px'; })(), bsGap: window.innerWidth < 768 ? 16 : 24, addFn: (id, si) => this.addItem(id, si), bsWrapS: 'overflow:' + (this.reduce ? 'auto' : 'hidden'), collections: Array.from({ length: 12 }, (_, k) => ({ ...b.collections1[k % 3], hid: k >= 3, tab: k >= 3 ? -1 : 0 })), colWrapS: `overflow:${this.reduce ? 'auto' : 'hidden'};border-radius:2px` }; }
+  renderBase() {
+    const s = this.state, E = this.E, m = x => this.m(x), mob = s.mob, H = h => ({ __html: h });
+    const BTN = `display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:52px;white-space:nowrap;padding:0 28px;border-radius:2px;font:600 14px/1 var(--f-body);letter-spacing:.04em;transition:gap .5s ${E},background .4s ${E},color .4s ${E};cursor:pointer;`;
+    const lines = s.items.map(i => { const p = this.prod(i.id), z = p.sizes[i.si]; return { name: p.name, size: z[0], qty: i.qty, total: m(z[1] * i.qty), inc: () => this.chg(i.id, i.si, 1), dec: () => this.chg(i.id, i.si, -1) }; });
+    const sub = s.items.reduce((a, i) => a + this.prod(i.id).sizes[i.si][1] * i.qty, 0), count = s.items.reduce((a, i) => a + i.qty, 0);
+    const anyOpen = s.cart || s.menu || s.search;
+    const msgs = ['Free shipping across India above ₹999', 'Diwali hampers are open for pre-order', 'Every jar is batch-tested. Look up yours'];
+    const products = this.P.map((p, idx) => {
+      const si = s.sel[p.id] || 0, z = p.sizes[si], hv = s.hov === 'p' + p.id;
+      const ghee = p.id[0] === 'g';
+      return {
+        name: p.name, rating: p.rating, price: m(z[1]), cmp: z[2] ? m(z[2]) : '', hasCmp: !!z[2], delay: idx * 70,
+        l1: (ghee ? 'PRODUCT: ' : 'PRODUCT: ') + p.name + ' jar, studio', l2: 'HOVER: ' + p.name + (ghee ? ' poured on hot roti' : ' with paratha'),
+        alt: p.name + ' jar on a cream background', alt2: p.name + ' served with a meal',
+        img2: `position:absolute;inset:0;transition:opacity .7s ${E};opacity:${hv ? 1 : 0}`,
+        badge: p.badge, badgeS: p.badge ? `position:absolute;left:12px;top:12px;background:${p.badge.startsWith('Save') ? '#A5432A' : '#2E4A1F'};color:#F4EBD6;font:600 11px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;padding:7px 9px;border-radius:2px` : 'display:none',
+        sizes: p.sizes.map((q, i) => ({ l: q[0], on: i === si, s: `min-height:36px;padding:0 14px;border-radius:2px;font:600 13px var(--f-body);border:1px solid ${i === si ? '#2E4A1F' : '#BDB090'};background:${i === si ? '#2E4A1F' : 'transparent'};color:${i === si ? '#F4EBD6' : '#2A1D12'};transition:all .3s ${E}`, click: () => this.setState(st => ({ sel: { ...st.sel, [p.id]: i } })) })),
+        enter: () => this.setState({ hov: 'p' + p.id }), leave: () => this.setState({ hov: '' }), add: () => this.addItem(p.id, si)
+      };
+    });
+    const sp = this.prod('g2'), spz = sp.sizes[s.spV];
+    const THUMBS = ['Front of jar', 'Label detail', 'Ghee on spoon', 'In the kitchen'];
+    const hover = (k, i) => s.hov === k + i;
+    const faqs = [
+      ['How long does the ghee last?', 'Unopened, 12 months from the date of packing. Once opened, use within 6 months and keep it in a cool, dry place. Use a clean, dry spoon.'],
+      ['How long does shipping take?', 'Metro cities in 2 to 4 days, the rest of India in 4 to 7. Orders above ₹999 ship free. You get a tracking link on WhatsApp and email.'],
+      ['How should I store the pickles?', 'Keep them in a cool, dry place, away from direct sun once opened. The oil should always cover the pieces. Use a dry spoon every time.'],
+      ['What is your return policy?', 'If a jar arrives damaged or you are not happy with the taste, write to us within 7 days with a photo and we will replace it or refund you.'],
+      ['What is the bilona method?', 'Milk is set into curd, the curd is churned by hand to make white butter, and the butter is simmered slowly into ghee. It takes about 30 litres of milk for 1 litre of ghee.'],
+      ['Do you take bulk or corporate orders?', 'Yes. We pack gift hampers for weddings, festivals and offices from 20 pieces. Write to bulk@grameen.in for pricing and custom labels.']
+    ].map((f, i) => { const o = s.faq === i; return { q: f[0], a: f[1], open: o, bid: 'fq' + i, pid: 'fa' + i, click: () => this.setState({ faq: o ? -1 : i }), ico: `flex:none;transition:transform .5s ${E};transform:rotate(${o ? 45 : 0}deg)`, wrap: `display:grid;grid-template-rows:${o ? '1fr' : '0fr'};transition:grid-template-rows .6s ${E}` }; });
+    const ql = s.q.trim().toLowerCase();
+    const resList = (ql ? this.P.filter(p => p.name.toLowerCase().includes(ql)) : this.P.slice(0, 4)).slice(0, 5).map(p => ({ name: p.name, price: 'from ' + m(p.sizes[0][1]) }));
+    const bt = s.batchRes, pr = s.pinRes;
+    const tn = 6;
+    return {
+      preS: `position:fixed;inset:0;z-index:10000;background:#F4EBD6;display:grid;place-items:center;transition:opacity .8s ${E},visibility 0s linear ${s.pre ? 0 : .8}s;opacity:${s.pre ? 1 : 0};visibility:${s.pre ? 'visible' : 'hidden'};pointer-events:${s.pre ? 'auto' : 'none'}`,
+      mob, desk: !mob, none: () => this.setState({}),
+      annS: `background:#2A1D12;color:#F4EBD6;overflow:hidden;transition:max-height .6s ${E};max-height:${s.annX ? 0 : 40}px`,
+      anns: msgs.map((t, i) => ({ t, s: `position:absolute;left:48px;right:48px;top:0;height:40px;display:flex;align-items:center;justify-content:center;text-align:center;font:500 13px/1.2 var(--f-body);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .6s ${E},transform .6s ${E};opacity:${s.ann === i ? 1 : 0};transform:translateY(${s.ann === i ? 0 : 8}px)` })),
+      closeAnn: () => this.setState({ annX: true }),
+      headS: `position:sticky;top:0;z-index:100;background:#F4EBD6;height:${s.sc ? 64 : 80}px;border-bottom:1px solid #D9CCAC;box-shadow:${s.sc ? '0 4px 16px -8px rgba(42,30,20,.25)' : 'none'};transition:height .5s ${E},box-shadow .4s ${E}`,
+      logoS: `height:${s.sc ? 48 : 62}px;width:auto;mix-blend-mode:multiply;filter:brightness(1.08) contrast(1.1);transition:height .5s ${E}`,
+      count, openCart: () => { this.lf = document.activeElement; this.setState({ cart: true, mega: false }); },
+      openMenu: () => { this.lf = document.activeElement; this.setState({ menu: true }); },
+      openSearch: () => { this.lf = document.activeElement; this.setState({ search: true, mega: false }); },
+      closeAll: () => this.setState({ cart: false, menu: false, search: false, mega: false }),
+      mega: s.mega, openMega: () => this.setState({ mega: true }), closeMega: () => this.setState({ mega: false }), toggleMega: () => this.setState(st => ({ mega: !st.mega })),
+      chevS: `transition:transform .4s ${E};transform:rotate(${s.mega ? 180 : 0}deg)`,
+      megaS: `position:absolute;left:0;right:0;top:100%;background:#FAF5E6;border-bottom:1px solid #D9CCAC;transition:opacity .4s ${E},transform .4s ${E},visibility 0s linear ${s.mega ? 0 : .4}s;opacity:${s.mega ? 1 : 0};transform:translateY(${s.mega ? 0 : -8}px);visibility:${s.mega ? 'visible' : 'hidden'}`,
+      megaScrim: `position:fixed;inset:0;z-index:90;background:rgba(42,30,20,.3);transition:opacity .4s ${E};opacity:${s.mega ? 1 : 0};pointer-events:${s.mega ? 'auto' : 'none'}`,
+      megaCols: [{ h: 'Ghee', links: ['Bilona Cow Ghee', 'A2 Gir Cow Ghee', 'Curry Leaf Tadka Ghee'] }, { h: 'Pickles', links: ['Aam Ka Achaar', 'Nimbu Achaar', 'Mixed Veg Achaar', 'Hari Mirch Achaar'] }, { h: 'Gift sets', links: ['The Everyday Pair', 'The Festive Hamper', 'Corporate gifting'] }],
+      searchS: `position:fixed;left:0;right:0;top:0;z-index:300;background:#F4EBD6;border-bottom:1px solid #2A1D12;max-height:100vh;overflow:auto;transition:transform .6s ${E},visibility 0s linear ${s.search ? 0 : .6}s;transform:translateY(${s.search ? 0 : -102}%);visibility:${s.search ? 'visible' : 'hidden'}`,
+      q: s.q, onQ: e => this.setState({ q: e.target.value }), results: resList, searchHead: ql ? 'Products' : 'Popular right now',
+      menuScrim: `position:fixed;inset:0;z-index:290;background:rgba(42,30,20,.5);transition:opacity .5s ${E};opacity:${s.menu ? 1 : 0};pointer-events:${s.menu ? 'auto' : 'none'}`,
+      menuS: `position:fixed;top:0;left:0;bottom:0;width:min(100%,380px);z-index:295;background:#F4EBD6;transition:transform .6s ${E},visibility 0s linear ${s.menu ? 0 : .6}s;transform:translateX(${s.menu ? 0 : -102}%);visibility:${s.menu ? 'visible' : 'hidden'}`,
+      mobLinks: [['Ghee', '#best-sellers'], ['Pickles', '#best-sellers'], ['Gift sets', '#collections'], ['Our story', '#story'], ['Journal', '#journal'], ['FAQ', '#faq']].map(x => ({ t: x[0], href: x[1] })),
+      btnP: BTN + 'background:#2E4A1F;color:#F4EBD6;border:1px solid #2E4A1F;', btnS: BTN + 'background:transparent;color:#2A1D12;border:1px solid #2A1D12;', btnOutline: BTN + 'width:100%;background:transparent;color:#2A1D12;border:1px solid #2A1D12;',
+      arrowB: `width:48px;height:48px;border:1px solid #2A1D12;border-radius:2px;background:transparent;color:#2A1D12;display:grid;place-items:center`,
+      stars: [1, 2, 3, 4, 5],
+      trust: [
+        { h: 'Small-batch', p: 'Made in lots of 200 jars', icon: H('<path d="M5 13h22v9a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5Z"/><path d="M3 13h26M11 9c0-3 2-3 2-6M19 9c0-3 2-3 2-6"/>') },
+        { h: 'No preservatives', p: 'Salt, oil and sun only', icon: H('<circle cx="16" cy="16" r="12"/><path d="M8 24L24 8"/>') },
+        { h: 'Village kitchens', p: '40 partner families', icon: H('<path d="M4 15L16 5l12 10M7 13v14h18V13"/><path d="M13 27v-8h6v8"/>') },
+        { h: 'Lab-tested', p: 'Every batch, every time', icon: H('<path d="M12 4h8M13 4v8L6 25a2 2 0 0 0 2 3h16a2 2 0 0 0 2-3l-7-13V4"/><path d="M10 20h12"/>') }
+      ],
+      collections1: [['Ghee', 'COLLECTION: ghee jars on a wooden shelf', '3 jars', 'Jars of ghee on a wooden shelf'], ['Pickles', 'COLLECTION: mango pickle in a ceramic bowl', '4 jars', 'Mango pickle in a ceramic bowl'], ['Gift Sets', 'COLLECTION: kraft gift box with ribbon', '2 sets', 'A kraft gift box tied with ribbon']].map((c, i) => ({ name: c[0], label: c[1], count: c[2], alt: c[3], delay: i * 90, enter: () => this.setState({ hov: 'c' + i }), leave: () => this.setState({ hov: '' }), zoom: this.zoom(hover('c', i)), desc: ['Bilona and A2 ghee, from 250 ml', 'Mango, lime and chilli, sun-cured', 'Boxes and hampers for every occasion'][i], arr: `flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:1px solid ${hover('c', i) ? '#2E4A1F' : '#2A1D12'};background:${hover('c', i) ? '#2E4A1F' : 'transparent'};color:${hover('c', i) ? '#F4EBD6' : '#2A1D12'};transition:all .5s ${E}` })),
+      products,
+      prevBS: () => document.getElementById('bs-track').scrollBy({ left: -330, behavior: 'smooth' }), nextBS: () => document.getElementById('bs-track').scrollBy({ left: 330, behavior: 'smooth' }),
+      steps: [['Milk', 'Fresh milk from village herds, collected at dawn and set into curd overnight.', 'STEP 1: pouring fresh milk into a steel pot'], ['Churn', 'The curd is churned by hand until white butter rises to the top.', 'STEP 2: hands churning curd with a wooden churner'], ['Simmer', 'The butter simmers for hours on a low flame until the ghee turns golden.', 'STEP 3: golden ghee simmering in a brass pan'], ['Jar', 'Strained, cooled and sealed in glass, with the batch code stamped on.', 'STEP 4: filling a glass jar with ghee']].map((x, i) => ({ n: '0' + (i + 1), t: x[0], p: x[1], label: x[2], alt: x[2].replace(/^STEP \d: /, ''), delay: i * 90 })),
+      why: [['Tall crop', 'Hand-churned', 'Never separated by machine. The bilona method keeps the aroma intact.', 600, 800, '0', 'WHY: churning hands, tall crop'], ['Square', 'Sun-cured', 'Our mango pickles dry on village terraces for weeks. No shortcuts.', 800, 800, '0', 'WHY: mangoes drying on a terrace'], ['Arch', 'Fairly sourced', 'We buy directly from 40 families and set prices together.', 600, 750, '999px 999px 0 0', 'WHY: farmer holding a basket, arch crop'], ['Square', 'Batch-tested', 'Every code leads to a lab report you can read.', 800, 800, '0', 'WHY: lab technician with a jar']].map((x, i) => ({ t: x[1], p: x[2], w: x[3], h: x[4], r: x[5], label: x[6], alt: x[6].replace('WHY: ', ''), delay: i * 90 })),
+      spot: { main: 'SPOTLIGHT: ' + THUMBS[s.thumb] + ', 1200x1400', price: m(spz[1]), cmp: m(spz[2] || spz[1]) },
+      thumbs: THUMBS.map((t, i) => ({ label: t, alt: 'Show image: ' + t, on: s.thumb === i, s: `padding:0;border:2px solid ${s.thumb === i ? '#2E4A1F' : 'transparent'};background:transparent;border-radius:2px;overflow:hidden;transition:border-color .3s`, click: () => this.setState({ thumb: i }) })),
+      spVars: sp.sizes.map((z, i) => ({ l: z[0], on: s.spV === i, s: `min-height:48px;padding:0 22px;border-radius:2px;font:600 14px var(--f-body);border:1px solid ${s.spV === i ? '#2E4A1F' : '#2A1D12'};background:${s.spV === i ? '#2E4A1F' : 'transparent'};color:${s.spV === i ? '#F4EBD6' : '#2A1D12'};transition:all .3s ${E}`, click: () => this.setState({ spV: i }) })),
+      spQty: s.spQ, spInc: () => this.setState(st => ({ spQ: st.spQ + 1 })), spDec: () => this.setState(st => ({ spQ: Math.max(1, st.spQ - 1) })), spAdd: () => this.addItem('g2', s.spV, s.spQ),
+      benefits: ['Churned from A2 Gir cow curd, never cream', 'Slow-simmered, no additives, no preservatives', 'Packed in amber glass, returnable', 'Batch code with lab report on every jar'],
+      pin: s.pin, onPin: e => this.setState({ pin: e.target.value.replace(/\D/g, '') }), checkPin: e => { e.preventDefault(); this.setState({ pinRes: /^\d{6}$/.test(s.pin) ? 'ok' : 'bad' }); },
+      pinMsg: pr === 'ok' ? `Delivery to ${s.pin} in 3 to 5 days. Free above ₹999.` : pr === 'bad' ? 'Enter a valid 6-digit pincode.' : '', pinS: `min-height:20px;font:600 14px/1.4 var(--f-body);color:${pr === 'ok' ? '#2E4A1F' : '#A5432A'}`,
+      inList: ['A2 cow milk, set into curd', 'Hand-churned white butter', 'Slow flame, time and patience'], outList: ['Preservatives', 'Palm oil and vanaspati', 'Artificial colours and flavours'],
+      batch: s.batch, onBatch: e => this.setState({ batch: e.target.value }), checkBatch: e => { e.preventDefault(); const v = s.batch.trim().toUpperCase(); this.setState({ batchRes: v === 'GR-2410-A' ? 'ok' : v ? 'no' : null }); },
+      batchMsg: bt === 'ok' ? 'Found. Churned 12 Oct 2026, Kitchen no. 3. All lab tests passed.' : bt === 'no' ? 'No match. Check the code printed under the jar.' : '', batchS: `min-height:22px;font:600 14px/1.4 var(--f-body);color:${bt === 'ok' ? '#E2B450' : '#F0A08E'}`,
+      reviews: [['The ghee smells exactly like my nani’s kitchen. The whole house knew when I opened it.', 'Meera K., Pune', 'Bilona Cow Ghee', 'MK'], ['Finally a mango pickle that is sour first and spicy second. Ordered four jars.', 'Rohit S., Bengaluru', 'Aam Ka Achaar', 'RS'], ['My son stopped fussing over dal. That is the whole review.', 'Anjali M., Delhi', 'A2 Gir Cow Ghee', 'AM'], ['Sent the hamper to my mother-in-law. She called to ask where I found it.', 'Sneha R., Mumbai', 'The Festive Hamper', 'SR'], ['Real lime, real salt, real sun. Nothing I cannot pronounce.', 'Farhan A., Hyderabad', 'Nimbu Achaar', 'FA'], ['Properly hot. I cried, I smiled, I ordered again.', 'Karthik V., Chennai', 'Hari Mirch Achaar', 'KV']].map(r => ({ text: r[0], who: r[1], item: r[2], ini: r[3] })),
+      prevT: () => document.getElementById('t-track').scrollBy({ left: -440, behavior: 'smooth' }), nextT: () => document.getElementById('t-track').scrollBy({ left: 440, behavior: 'smooth' }),
+      onTScroll: e => { const t = e.currentTarget, p = Math.round(t.scrollLeft / Math.max(1, t.scrollWidth - t.clientWidth) * 100) / 100; if (p !== this.state.tp) this.setState({ tp: p }); },
+      tBar: `height:2px;background:#2E4A1F;width:${Math.max(.15, Math.min(1, .25 + s.tp * .75)) * 100}%;transition:width .3s ${E}`,
+      posts: [['12 Oct 2026', 'Dal tadka, finished with a spoon of ghee', 'JOURNAL: dal tadka in a steel bowl'], ['28 Sep 2026', 'Why mango pickle needs six weeks of sun', 'JOURNAL: mangoes drying on a terrace'], ['14 Sep 2026', 'A beginner’s guide to bilona ghee', 'JOURNAL: wooden churner and curd']].map((p, i) => ({ date: p[0], t: p[1], label: p[2], alt: p[2].replace('JOURNAL: ', ''), delay: i * 90, enter: () => this.setState({ hov: 'a' + i }), leave: () => this.setState({ hov: '' }), zoom: this.zoom(hover('a', i)) })),
+      ugc: [0, 1, 2, 3, 4, 5].map(i => ({ label: 'UGC: customer photo ' + (i + 1), alt: 'Customer photo ' + (i + 1) + ' on Instagram', enter: () => this.setState({ hov: 'u' + i }), leave: () => this.setState({ hov: '' }), ov: `position:absolute;inset:0;background:rgba(46,74,31,.75);display:grid;place-items:center;transition:opacity .5s ${E};opacity:${hover('u', i) ? 1 : 0}` })),
+      faqs,
+      nlOpen: !s.nl, nlDone: s.nl, email: s.email, onEmail: e => this.setState({ email: e.target.value }), subscribe: e => { e.preventDefault(); this.setState({ nl: true }); },
+      fcols: [{ h: 'Shop', links: [['Ghee', '#best-sellers'], ['Pickles', '#best-sellers'], ['Gift sets', '#collections']] }, { h: 'Help', links: [['FAQ', '#faq'], ['Batch lookup', '#purity'], ['Shipping and returns', '#faq'], ['Contact', '#top']] }].map(c => ({ h: c.h, links: c.links.map(l => ({ t: l[0], href: l[1] })) })),
+      pays: ['UPI', 'VISA', 'MC', 'RUPAY', 'COD'],
+      note: s.note, onNote: e => this.setState({ note: e.target.value }), addUpsell: () => this.addItem('p1', 0),
+      scrimS: `position:fixed;inset:0;z-index:290;background:rgba(42,30,20,.5);transition:opacity .5s ${E};opacity:${s.cart ? 1 : 0};pointer-events:${s.cart ? 'auto' : 'none'}`,
+      drawerS: `position:fixed;top:0;right:0;bottom:0;z-index:295;width:min(100%,440px);background:#F4EBD6;display:flex;flex-direction:column;transition:transform .6s ${E},visibility 0s linear ${s.cart ? 0 : .6}s;transform:translateX(${s.cart ? 0 : 102}%);visibility:${s.cart ? 'visible' : 'hidden'}`,
+      lines, cartEmpty: !lines.length, subtotal: m(sub), shipMsg: sub >= 999 ? 'You have unlocked free shipping' : `Add ${m(999 - sub)} more for free shipping`, shipBar: `height:100%;background:#2E4A1F;width:${Math.min(100, sub / 999 * 100)}%;transition:width .6s ${E}`
+    };
+  }
+  igVals() {
+    const s = this.state, E = this.E, w = window.innerWidth, mob = w < 768, cols = w >= 1100 ? 6 : 3, pad = w < 900 ? 16 : 24, gap = 8;
+    const cont = Math.min(w, 1320) - pad * 2, tile = mob ? Math.floor((w - pad - gap * 2) / 2.2) : Math.floor((cont - gap * (cols - 1)) / cols);
+    const alts = ['Dal tadka with a spoon of ghee on a steel plate', 'Mango pickle beside fresh parathas', 'A jar of ghee on a kitchen shelf', 'Khichdi finished with ghee', 'Lime pickle on a thali', 'A hamper unwrapped on a table'];
+    return {
+      igLinkIn: () => this.setState({ iglink: true }), igLinkOut: () => this.setState({ iglink: false }), igArrowS: 'display:inline-flex;transition:transform .3s ' + E + ';transform:translateX(' + (s.iglink ? 4 : 0) + 'px)',
+      igWrapS: mob ? 'overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 ' + pad + 'px' : 'max-width:1320px;margin:0 auto;padding:0 ' + pad + 'px',
+      igGridS: mob ? 'display:flex;gap:8px;width:max-content' : 'display:grid;grid-template-columns:repeat(' + cols + ',minmax(0,1fr));gap:8px',
+      igTileW: mob ? tile + 'px' : 'auto',
+      igTiles: alts.map((al, i) => ({ label: 'UGC: ' + al, alt: al + ', customer photo on Instagram', enter: () => this.setState({ hov: 'ig' + i }), leave: () => this.setState({ hov: '' }), ov: 'position:absolute;inset:0;background:rgba(46,74,31,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .5s ' + E + ';opacity:' + (s.hov === 'ig' + i ? 1 : 0) }))
+    };
+  }
+  faqVals() {
+    const s = this.state, E = this.E, mob = s.mob;
+    const F = [['How long does the ghee last?', 'Unopened, 12 months from the date of packing. Once opened, use within 6 months and keep it in a cool, dry place. Use a clean, dry spoon.'], ['How long does shipping take?', 'Metro cities in 2 to 4 days, the rest of India in 4 to 7. Orders above ₹999 ship free. You get a tracking link on WhatsApp and email.'], ['How should I store the pickles?', 'Keep them in a cool, dry place, away from direct sun once opened. The oil should always cover the pieces. Use a dry spoon every time.'], ['What is your return policy?', 'If a jar arrives damaged or you are not happy with the taste, write to us within 7 days with a photo and we will replace it or refund you.'], ['What is the bilona method?', 'Milk is set into curd, the curd is churned by hand to make white butter, and the butter is simmered slowly into ghee. It takes about 30 litres of milk for 1 litre of ghee.'], ['Do you take bulk or corporate orders?', 'Yes. We pack gift hampers for weddings, festivals and offices from 20 pieces. Write to bulk@grameen.in for pricing and custom labels.']];
+    return {
+      fGridS: mob ? 'display:flex;flex-direction:column;gap:32px' : 'display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:start',
+      fLS: mob ? '' : 'grid-column:1/5;position:sticky;top:96px', fRS: (mob ? '' : 'grid-column:6/13;') + 'border-top:1px solid #2A1D12',
+      faqWa: 'display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-height:52px;background:#2E4A1F;border:1px solid #2E4A1F;color:#F4EBD6;font:600 14px/1 var(--f-body);letter-spacing:.04em;transition:background .3s ' + E,
+      fqKey: e => { const ids = F.map((x, i) => 'fq' + i), cur = ids.indexOf(document.activeElement && document.activeElement.id); if (cur < 0) return; let n = null; if (e.key === 'ArrowDown') n = (cur + 1) % ids.length; else if (e.key === 'ArrowUp') n = (cur + ids.length - 1) % ids.length; else if (e.key === 'Home') n = 0; else if (e.key === 'End') n = ids.length - 1; if (n !== null) { e.preventDefault(); const el = document.getElementById(ids[n]); el && el.focus(); } },
+      faqRows: F.map((f, i) => { const on = s.faq === i; return { n: '0' + (i + 1), q: f[0], a: f[1], open: on, bid: 'fq' + i, pid: 'fa' + i, click: () => this.setState({ faq: on ? -1 : i }),
+        bar: 'position:absolute;left:0;top:0;bottom:0;width:3px;background:#2E4A1F;transform-origin:top;transform:scaleY(' + (on ? 1 : 0) + ');transition:transform .5s ' + E,
+        btn: 'display:grid;grid-template-columns:' + (mob ? '28px' : '40px') + ' minmax(0,1fr) 40px;align-items:center;gap:' + (mob ? 12 : 20) + 'px;width:100%;min-height:80px;padding:12px 0 12px ' + (on ? 20 : 8) + 'px;border:0;background:transparent;text-align:left;color:#2A1D12;transition:padding .5s ' + E,
+        qS: 'font:500 var(--t-h3)/1.2 var(--f-sub);color:' + (on ? '#2E4A1F' : '#2A1D12') + ';transition:color .3s ' + E,
+        icoBox: 'width:40px;height:40px;display:grid;place-items:center;border:1px solid ' + (on ? '#2E4A1F' : '#D9CCAC') + ';background:' + (on ? '#2E4A1F' : 'transparent') + ';color:' + (on ? '#F4EBD6' : '#2A1D12') + ';transition:all .4s ' + E,
+        ico: 'transition:transform .5s ' + E + ';transform:rotate(' + (on ? 45 : 0) + 'deg)',
+        wrap: 'display:grid;grid-template-rows:' + (on ? '1fr' : '0fr') + ';transition:grid-template-rows .5s ' + E,
+        aS: 'margin:0;padding:0 56px 28px ' + (mob ? 40 : 68) + 'px;max-width:62ch;font:400 16px/1.7 var(--f-body);color:rgba(42,29,18,.8)' }; })
+    };
+  }
+  nlVals() {
+    const s = this.state, E = this.E;
+    return {
+      nlPerks: ['One recipe, every other Sunday', 'First look at seasonal batches', '10% off your first jar'],
+      nlCode: s.nl ? 'Code FIRSTJAR10' : 'Subscribe to unlock your code',
+      nlIn: () => this.setState({ nlh: true }), nlOut: () => this.setState({ nlh: false }),
+      nlBtn: 'display:inline-flex;align-items:center;justify-content:center;gap:12px;flex:0 0 auto;white-space:nowrap;height:56px;padding:0 28px;border:1px solid #F4EBD6;border-radius:0;background:' + (s.nlh ? '#E2B450' : '#F4EBD6') + ';color:#2A1D12;font:600 14px/1 var(--f-body);letter-spacing:.04em;cursor:pointer;transition:background .3s ' + E,
+      nlArrow: 'display:inline-flex;transition:transform .3s ' + E + ';transform:translateX(' + (s.nlh ? 4 : 0) + 'px)'
+    };
+  }
+  selectMonth(n) {
+    n = Math.max(0, Math.min(11, n)); if (n === this.state.cal) return;
+    const els = Array.from(document.querySelectorAll('#cal-text [data-ct]'));
+    if (this.reduce || !els.length) { this.setState({ cal: n }); return; }
+    els.forEach(el => el.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-8px)' }], { duration: 200, easing: this.E, fill: 'forwards' }));
+    clearTimeout(this.ct); this.ct = setTimeout(() => this.setState({ cal: n }), 200);
+  }
+  calVals() {
+    const s = this.state, E = this.E, mob = s.mob, cal = s.cal, now = new Date().getMonth(), m = x => this.m(x);
+    const B = ['Winter vegetables', 'Mango and lime season', 'Monsoon rest', 'Chilli, amla and winter roots'];
+    // PLACEHOLDER copy, captions and product mapping: replace with real data
+    const MO = [
+      ['Jan', 'January', 0, [['Amla', 'Peak'], ['Carrot', 'Peak'], ['Green chilli', 'Early']], 'p3', 'stock', 'Tart amla and red carrots go into the first jars of the year.', 'Amla and red carrots in cane baskets, Uttar Pradesh'],
+      ['Feb', 'February', 0, [['Carrot', 'Peak'], ['Turnip', 'Peak'], ['Cauliflower', 'Ending']], 'p3', 'stock', 'The last winter roots are cut, salted and set out in the weak February sun.', 'Winter roots drying in the February sun, Punjab'],
+      ['Mar', 'March', 1, [['Raw mango', 'Early'], ['Ginger', 'Peak'], ['Mustard seed', 'Early']], 'p1', 'pre', 'Small green mangoes arrive. The first batches are cut and left to cure.', 'Small green mangoes in a cane basket, Uttar Pradesh'],
+      ['Apr', 'April', 1, [['Raw mango', 'Early'], ['Lemon', 'Early'], ['Mustard oil', 'Early']], 'p1', 'pre', 'Mango season begins, and mustard is pressed fresh for the year’s pickling oil.', 'Mustard seed being pressed for pickling oil, Rajasthan'],
+      ['May', 'May', 1, [['Raw mango', 'Peak'], ['Fennel', 'Peak'], ['Fenugreek', 'Peak']], 'p1', 'stock', 'Peak season. Mango wedges are salted, dried and spiced, then packed in jars for the sun.', 'Raw mango wedges drying on rooftop charpais, Rajasthan'],
+      ['Jun', 'June', 1, [['Lemon', 'Peak'], ['Raw mango', 'Ending'], ['Ginger', 'Peak']], 'p2', 'stock', 'Lemons ripen in the strongest heat of the year, the best time for sun-curing.', 'Lemons curing in glass jars on a terrace, Gujarat'],
+      ['Jul', 'July', 2, [['Lemon', 'Ending'], ['Green chilli', 'Peak'], ['Garlic', 'Early']], 'p2', 'rest', 'Monsoon pause. Nothing new is cured in the rain, so we pack from matured jars.', 'Matured jars resting in a dark store room'],
+      ['Aug', 'August', 2, [['Ginger', 'Peak'], ['Garlic', 'Early'], ['Green chilli', 'Ending']], 'p1', 'rest', 'Jars rest in the dark and deepen in flavour. We wait for clear skies.', 'Pickle jars deepening in a dark store room'],
+      ['Sep', 'September', 2, [['Garlic', 'Peak'], ['Ginger', 'Ending'], ['Red chilli', 'Early']], 'p3', 'stock', 'The skies clear. Garlic is peeled by hand and the first red chillies are set out to dry.', 'Garlic peeled by hand on a kitchen floor, Madhya Pradesh'],
+      ['Oct', 'October', 3, [['Red chilli', 'Peak'], ['Green chilli', 'Peak'], ['Amla', 'Early']], 'p3', 'stock', 'Red chillies dry on rooftops before being ground fresh for the season.', 'Red chillies drying on a rooftop, Rajasthan'],
+      ['Nov', 'November', 3, [['Amla', 'Peak'], ['Red chilli', 'Peak'], ['Turmeric', 'Peak']], 'p3', 'stock', 'Amla comes in green and tart, and fresh turmeric is dug and grated for the jars.', 'Fresh turmeric and amla in baskets, Tamil Nadu'],
+      ['Dec', 'December', 3, [['Amla', 'Peak'], ['Carrot', 'Early'], ['Radish', 'Early']], 'p3', 'stock', 'Cold mornings and quick-cured winter vegetables, the year’s last big batch.', 'Radish and carrots drying on a rope bed, Punjab']
+    ];
+    const cur = MO[cal], prod = this.prod(cur[4]), sz = prod.sizes[0], av = cur[5];
+    const SC = { Peak: '#2E4A1F', Early: '#D99A1C', Ending: '#A5432A', Resting: '#D9CCAC' };
+    const go = n => { this.selectMonth(n); setTimeout(() => { const el = document.getElementById('cm' + Math.max(0, Math.min(11, n))); el && el.focus(); }, 260); };
+    const peak = MO.map(x => x[3].filter(i => i[1] === 'Peak').length >= 2);
+    const note = s.cnotify === cal ? 'Thank you. We will email you when this batch is ready.' : av === 'stock' ? 'Batch packed this month. Ships in 5 to 7 days.' : av === 'pre' ? 'Pre-order batch ships 3 to 4 weeks after harvest.' : 'Back after the rains. We will tell you when it is ready.';
+    return {
+      cHeadS: mob ? 'display:flex;flex-direction:column;gap:16px' : 'display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:end', cLS: mob ? '' : 'grid-column:1/8', cRS: mob ? '' : 'grid-column:9/13',
+      calBands: [[0, 2, 0], [2, 6, 1], [6, 9, 2], [9, 12, 3]].map(x => ({ l: B[x[2]], s: 'grid-column:' + (x[0] + 1) + '/' + (x[1] + 1) + ';border-top:1px solid #D9CCAC;padding:10px 8px 4px 0;font:600 12px/1.2 var(--f-label);letter-spacing:.12em;text-transform:uppercase;color:rgba(42,29,18,.55)' })), calBandNow: B[cur[2]],
+      calTrackS: mob ? 'overflow-x:auto;scrollbar-width:none' : 'position:relative',
+      calInnerS: 'position:relative;display:grid;grid-template-columns:repeat(12,' + (mob ? '64px' : 'minmax(0,1fr)') + ');' + (mob ? 'width:max-content' : ''),
+      calMonths: MO.map((x, i) => { const on = i === cal, hv = s.hov === 'cm' + i && !on; return { id: 'cm' + i, l: x[0], on, tab: on ? 0 : -1, click: () => this.selectMonth(i), enter: () => this.setState({ hov: 'cm' + i }), leave: () => this.setState({ hov: '' }),
+        s: 'position:relative;height:64px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;padding:0 0 12px;border-radius:0',
+        lS: 'font:600 13px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:' + (on ? '#2E4A1F' : hv ? '#2A1D12' : 'rgba(42,29,18,.55)') + ';transition:color .3s ' + E,
+        dot: 'width:4px;height:4px;border-radius:50%;background:' + (peak[i] ? '#5B7433' : 'transparent'),
+        nowS: 'position:absolute;top:8px;left:0;right:0;text-align:center;font:600 10px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:#A5432A;display:' + (i === now ? 'block' : 'none') }; }),
+      calBar: 'position:absolute;left:0;bottom:0;width:calc(100% / 12);height:3px;background:#2E4A1F;transform:translateX(' + cal * 100 + '%);transition:transform .5s ' + E,
+      calKey: e => { let n = null; if (e.key === 'ArrowRight') n = cal + 1; else if (e.key === 'ArrowLeft') n = cal - 1; else if (e.key === 'Home') n = 0; else if (e.key === 'End') n = 11; if (n !== null) { e.preventDefault(); go(n); } },
+      cMainS: mob ? 'display:flex;flex-direction:column;gap:24px;margin-top:24px' : 'display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:start;margin-top:48px',
+      cTextS: mob ? 'order:2' : 'grid-column:1/6',
+      cPhotoCol: mob ? 'order:1;margin:0 calc(-1 * clamp(16px,2.2vw,24px))' : 'grid-column:7/13', cPhotoS: 'position:relative;overflow:hidden;background:#EDE4CE;aspect-ratio:' + (mob ? '1/1' : '4/5'),
+      calLayers: MO.map((x, i) => ({ i, hid: i !== cal, label: 'MONTH: ' + x[7] + ', 1200x1500', alt: x[7], s: 'position:absolute;inset:0;z-index:' + (i === cal ? 2 : 1) })),
+      calCur: { band: B[cur[2]], full: cur[1], copy: cur[6], caption: cur[7] }, calCount: String(cal + 1).padStart(2, '0') + ' / 12',
+      calIngs: cur[3].map(i => ({ n: i[0], st: i[1], dot: 'width:8px;height:8px;border-radius:50%;background:' + SC[i[1]] })),
+      calProd: { name: prod.name, label: 'THUMB: ' + prod.name, meta: sz[0] + ' · ' + m(sz[1]) }, viewIn: () => this.setState({ cview: true }), viewOut: () => this.setState({ cview: false }), viewArrowS: 'display:inline-flex;transition:transform .3s ' + E + ';transform:translateX(' + (s.cview ? 4 : 0) + 'px)',
+      calBtn: av === 'stock' ? 'Add to cart' : av === 'pre' ? 'Pre-order this batch' : 'Notify me', ctaIn: () => this.setState({ cta: true }), ctaOut: () => this.setState({ cta: false }),
+      calBtnS: 'width:100%;height:52px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 20px;border-radius:0;font:600 14px/1 var(--f-body);letter-spacing:.04em;cursor:pointer;border:1px solid ' + (av === 'rest' ? '#D9CCAC' : '#2E4A1F') + ';background:' + (av === 'rest' ? 'transparent' : '#2E4A1F') + ';color:' + (av === 'rest' ? '#2A1D12' : '#F4EBD6'),
+      ctaArrowS: 'display:inline-flex;transition:transform .3s ' + E + ';transform:translateX(' + (s.cta ? 4 : 0) + 'px)',
+      calAct: () => { if (av === 'rest') this.setState({ cnotify: cal }); else this.addItem(cur[4], 0); }, calNote: note,
+      calPrev: () => this.selectMonth(cal === 0 ? 11 : cal - 1), calNext: () => this.selectMonth(cal === 11 ? 0 : cal + 1),
+      cTS: e => { this.cx0 = e.touches[0].clientX; }, cTE: e => { const dx = e.changedTouches[0].clientX - this.cx0; if (Math.abs(dx) > 40) this.selectMonth(cal + (dx < 0 ? 1 : -1)); }
+    };
+  }
+  vCancel() { if (this.va) { this.va.onfinish = null; this.va.cancel(); this.va = null; } }
+  vApply() { if (!this.va) return; (!this.vvis || this.vin) ? this.va.pause() : this.va.play(); }
+  vStart() {
+    this.vCancel(); if (this.reduce || this.state.mob || this.vstop) return;
+    const el = document.querySelector('[data-vprog="' + this.state.vil + '"]'); if (!el) return;
+    this.va = el.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 6000, easing: 'linear', fill: 'forwards' });
+    this.va.onfinish = () => this.setState(st => ({ vil: (st.vil + 1) % 4 })); this.vApply();
+  }
+  villageVals() {
+    const s = this.state, E = this.E, mob = s.mob, vi = s.vil, N = 4;
+    // PLACEHOLDER people and quotes: replace with real stories
+    const PPL = [['Ramkali Devi', 'Nawalgarh, Rajasthan', 'Pickle maker', 14, 'her', 'I can tell the mango is ready by the smell of the skin, not by the calendar.', 'hand-cutting raw mangoes in her kitchen'], ['Hari Singh', 'Moga, Punjab', 'Dairy farmer', 22, 'his', 'The cows are milked by hand at five every morning. That has not changed in my lifetime.', 'with his cattle at dawn'], ['Sunita Bai', 'Hoshangabad, Madhya Pradesh', 'Ghee maker', 11, 'her', 'We churn in the cool of the morning. Hurry the butter and the ghee tastes flat.', 'churning curd in a clay pot'], ['Mohan Lal', 'Talala, Gujarat', 'Mango grower', 27, 'his', 'These trees were my father’s. I pick only the mangoes that are sour enough for pickle.', 'in his mango orchard']];
+    const go = n => { this.setState({ vil: n }); setTimeout(() => { const el = document.getElementById('vt' + n) || document.getElementById('vtc' + n); el && el.focus(); }, 30); };
+    const people = PPL.map((p, i) => { const on = i === vi, hv = s.hov === 'vl' + i; return { i, n: '0' + (i + 1), name: p[0], meta: p[1] + ' · ' + p[2], yrs: p[3] + ' yrs', quote: p[5], story: 'Read ' + p[4] + ' story', on, off: !on, tid: 'vt' + i, pid: 'vp' + i, tab: on ? 0 : -1,
+      click: () => this.setState({ vil: i }), enter: () => this.setState({ hov: 'vl' + i }), leave: () => this.setState({ hov: '' }),
+      rowS: 'position:relative;border-bottom:1px solid rgba(244,235,214,.2);background:' + (hv && !on ? 'rgba(244,235,214,.05)' : 'transparent') + ';transition:background .4s ' + E,
+      bar: 'position:absolute;left:0;top:0;bottom:0;width:3px;background:#E2B450;transform-origin:top;transform:scaleY(' + (on ? 1 : 0) + ');transition:transform .5s ' + E,
+      nameS: 'display:block;font:500 22px/1.2 var(--f-sub);color:' + (on ? '#E2B450' : '#F4EBD6') + ';transform:translateX(' + (hv && !on ? 6 : 0) + 'px);transition:transform .4s ' + E + ',color .4s ' + E,
+      panelS: 'display:grid;grid-template-rows:' + (on ? '1fr' : '0fr') + ';transition:grid-template-rows .5s ' + E + ',visibility 0s linear ' + (on ? 0 : .5) + 's;visibility:' + (on ? 'visible' : 'hidden') }; });
+    const cur = PPL[vi];
+    return {
+      people, chips: PPL.map((p, i) => ({ name: p[0].split(' ')[0], tid: 'vtc' + i, on: i === vi, click: () => this.setState({ vil: i }), s: 'flex:none;min-height:44px;padding:0 18px;border-radius:0;border:1px solid ' + (i === vi ? '#E2B450' : 'rgba(244,235,214,.3)') + ';background:' + (i === vi ? '#E2B450' : 'transparent') + ';color:' + (i === vi ? '#2A1D12' : '#F4EBD6') + ';font:600 14px/1 var(--f-body);scroll-snap-align:start' })),
+      vCur: { name: cur[0], village: cur[1], meta: cur[1] + ' · ' + cur[2], quote: cur[5], story: 'Read ' + cur[4] + ' story' },
+      vLayers: PPL.map((p, i) => ({ i, label: 'PORTRAIT: ' + p[0] + ' ' + p[6] + ', 1200x1500', alt: p[0] + ' ' + p[6] + ', ' + p[1].split(', ').slice(-1)[0], s: 'position:absolute;inset:0;z-index:' + (i === vi ? 2 : 1) })),
+      vKey: e => { let n = null; if (['ArrowDown', 'ArrowRight'].includes(e.key)) n = (vi + 1) % N; else if (['ArrowUp', 'ArrowLeft'].includes(e.key)) n = (vi + N - 1) % N; else if (e.key === 'Home') n = 0; else if (e.key === 'End') n = N - 1; if (n !== null) { e.preventDefault(); go(n); } },
+      vTS: e => { this.tx0 = e.touches[0].clientX; this.vstop = true; this.vCancel(); }, vTE: e => { const dx = e.changedTouches[0].clientX - this.tx0; if (Math.abs(dx) > 40) this.setState(st => ({ vil: (st.vil + (dx < 0 ? 1 : N - 1)) % N })); },
+      vHeadS: mob ? 'display:flex;flex-direction:column;gap:20px' : 'display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:end',
+      vL: mob ? '' : 'grid-column:1/8', vR: (mob ? '' : 'grid-column:9/13;') + 'display:flex;flex-direction:column;gap:16px',
+      vLinkIn: () => this.setState({ vlink: true }), vLinkOut: () => this.setState({ vlink: false }), vArrowS: 'display:inline-flex;transition:transform .4s ' + E + ';transform:translateX(' + (s.vlink ? 4 : 0) + 'px)',
+      vMainS: mob ? 'display:flex;flex-direction:column;gap:20px' : 'display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:start',
+      vPhotoCol: mob ? 'margin:0 calc(-1 * clamp(16px,2.2vw,24px))' : 'grid-column:1/7', vPhotoS: 'position:relative;overflow:hidden;background:#E9E1CF;aspect-ratio:' + (mob ? '1/1' : '4/5'),
+      vStatsS: 'display:grid;grid-template-columns:repeat(' + (mob ? 2 : 4) + ',minmax(0,1fr));margin-top:48px;border-top:1px solid rgba(244,235,214,.2)',
+      vStats: [[120, '+', 'families supported'], [300, '+', 'cows cared for'], [85000, '+', 'jars packed'], [6, '', 'villages']].map((x, i) => ({ n: x[0], suf: x[1], l: x[2], s: 'padding:28px ' + (mob ? 16 : 24) + 'px;' + (mob ? (i % 2 ? 'border-left:1px solid rgba(244,235,214,.2);' : '') + (i >= 2 ? 'border-top:1px solid rgba(244,235,214,.2);' : '') : (i ? 'border-left:1px solid rgba(244,235,214,.2);' : 'padding-left:0;')) }))
+    };
+  }
+  initExtra() {
+    this.cio = new IntersectionObserver(es => es.forEach(en => {
+      if (!en.isIntersecting) return; this.cio.unobserve(en.target);
+      const el = en.target, to = +el.dataset.count;
+      if (this.reduce) { el.textContent = to.toLocaleString('en-IN'); return; }
+      const t0 = performance.now(), d = 1200;
+      const f = t => { const k = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - k, 4); el.textContent = Math.round(to * e).toLocaleString('en-IN'); if (k < 1) requestAnimationFrame(f); };
+      requestAnimationFrame(f);
+    }), { threshold: 0.5 });
+    document.querySelectorAll('[data-count]').forEach(el => this.cio.observe(el));
+    addEventListener('resize', () => { clearTimeout(this.rt); this.rt = setTimeout(() => this.forceUpdate(), 150); });
+    if (this.reduce) return;
+    this.vvis = false; this.vh = false; this.vf = false; this.vin = false;
+    const vs = document.getElementById('village');
+    if (vs) new IntersectionObserver(es => es.forEach(en => { this.vvis = en.isIntersecting; if (en.isIntersecting && !this.va) this.vStart(); else this.vApply(); }), { threshold: 0.35 }).observe(vs);
+    addEventListener('pointerover', e => { const inn = !!(e.target.closest && e.target.closest('#v-list')); if (e.pointerType === 'touch') { this.vstop = true; this.vCancel(); } if (inn !== this.vh) { this.vh = inn; this.vin = this.vh || this.vf; this.vApply(); } });
+    addEventListener('focusin', e => { this.vf = !!(e.target.closest && e.target.closest('#v-list')); this.vin = this.vh || this.vf; this.vApply(); });
+    addEventListener('focusout', () => { this.vf = false; this.vin = this.vh; this.vApply(); });
+  }
+  upExtra(ps) {
+    if (this.reduce) return; const s = this.state, E = this.E;
+    const clip = id => { const el = document.getElementById(id); el && el.animate([{ clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)' }], { duration: 900, easing: E }); };
+    const rise = id => { const el = document.getElementById(id); el && el.animate([{ opacity: 0.2, transform: 'translateY(22px)' }, { opacity: 1, transform: 'none' }], { duration: 800, easing: E }); };
+    if (ps.bil !== s.bil || ps.bilTab !== s.bilTab) clip('bil-photo');
+    if (ps.cal !== s.cal) {
+      const l = document.querySelector('[data-clayer="' + s.cal + '"]'); if (l) { l.animate([{ clipPath: 'inset(100% 0 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: 600, easing: E }); l.firstElementChild && l.firstElementChild.animate([{ transform: 'scale(1.03)' }, { transform: 'scale(1)' }], { duration: 900, easing: E }); }
+      document.querySelectorAll('#cal-text [data-ct]').forEach((el, i) => { el.getAnimations().forEach(a => a.cancel()); el.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 500, delay: i * 60, easing: E, fill: 'both' }); });
+      if (s.mob) { const tr = document.getElementById('cal-track'), c = document.getElementById('cm' + s.cal); if (tr && c) tr.scrollTo({ left: c.offsetLeft - (tr.clientWidth - 64) / 2, behavior: 'smooth' }); }
+    }
+    if (ps.vil !== s.vil) { const l = document.querySelector('[data-vlayer="' + s.vil + '"]'); if (l) { l.animate([{ clipPath: 'inset(100% 0 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: 600, easing: E }); l.firstElementChild && l.firstElementChild.animate([{ transform: 'scale(1.03)' }, { transform: 'scale(1)' }], { duration: 900, easing: E }); } this.vStart(); }
+    if (ps.cal !== s.cal) clip('cal-photo');
+    if (ps.dish !== s.dish) rise('pair-panel');
+    if (ps.qs !== s.qs) rise('quiz-card');
+  }
+  renderNew() {
+    const s = this.state, E = this.E, m = x => this.m(x), mob = s.mob;
+    const BTN = `display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:52px;white-space:nowrap;padding:0 28px;border-radius:2px;font:600 14px/1 var(--f-body);letter-spacing:.04em;transition:gap .5s ${E},background .4s ${E},color .4s ${E};cursor:pointer;`;
+    // Bilona
+    const PATH = {
+      ghee: [['Milk', 'Fresh A2 milk from village herds, collected at dawn and carried to the kitchen still warm.', 'GHEE 1: pouring fresh milk into a clay pot'], ['Curd', 'Set overnight with a spoon of last batch’s culture. Nothing added, nothing rushed.', 'GHEE 2: set curd in a clay pot, close-up'], ['Hand-churning', 'Churned by hand with a wooden mathani until the butter separates from the buttermilk.', 'GHEE 3: hands churning curd with a wooden churner'], ['Butter', 'White butter (makkhan) is gathered, rinsed in cool water and set aside.', 'GHEE 4: white butter in a steel bowl'], ['Slow simmer', 'Simmered for hours on a low flame until the kitchen smells of roasted nuts.', 'GHEE 5: ghee simmering in a brass pan over a wood fire'], ['Golden ghee', 'Strained, cooled and poured into glass while it still glows.', 'GHEE 6: golden ghee poured into a glass jar']],
+      pickle: [['Sun-ripened mango', 'Raw mangoes picked at the sour stage from family orchards.', 'PICKLE 1: raw mangoes in a cane basket'], ['Hand-cut', 'Cut by hand into thick wedges with the stone in, never peeled.', 'PICKLE 2: hands cutting raw mango on a wooden board'], ['Spiced', 'Coated in hand-ground fennel, fenugreek, nigella and warm mustard oil.', 'PICKLE 3: spices mixed into mango in a clay bowl'], ['Sun-cured', 'Left on the terrace in glass jars for six weeks. The sun does the work.', 'PICKLE 4: glass jars of pickle curing in the sun']]
+    };
+    const list = PATH[s.bilTab], bi = Math.min(s.bil, list.length - 1), cur = list[bi];
+    const META = {"ghee":["At dawn","Overnight","About 40 minutes","Same day","3 to 4 hours","Cools overnight"],"pickle":["Late April","Half a day","Same day","6 weeks on the terrace"]};
+    const bilTabs = [['ghee', 'Ghee path'], ['pickle', 'Pickle path']].map(x => ({ l: x[1], on: s.bilTab === x[0], s: `position:relative;z-index:1;width:132px;min-height:44px;border:0;background:transparent;color:${s.bilTab === x[0] ? '#F4EBD6' : '#2A1D12'};font:600 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;transition:color .4s ${E}`, click: () => this.setState({ bilTab: x[0], bil: 0 }) }));
+    const bilSteps = list.map((x, i) => { const on = i === bi, done = i < bi; return { n: '0' + (i + 1), t: x[0], p: x[1], meta: 'Takes: ' + META[s.bilTab][i], on, click: () => this.setState({ bil: i }),
+      dot: mob ? `font:600 13px/1 var(--f-body);color:${on ? '#F4EBD6' : '#8A5F10'};min-width:24px` : `position:relative;z-index:1;flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:600 14px/1 var(--f-body);font-variant-numeric:tabular-nums;border:2px solid ${on || done ? '#2E4A1F' : '#BDB090'};background:${on ? '#2E4A1F' : done ? '#DCE5CC' : '#F4EBD6'};color:${on ? '#F4EBD6' : done ? '#2E4A1F' : '#7A6A52'};transition:all .5s ${E}`,
+      tS: mob ? 'display:block' : `display:block;padding-top:7px;font:500 var(--t-h3)/1.2 var(--f-sub);color:${on ? '#2E4A1F' : '#4A3A28'};transition:color .4s ${E}`,
+      dS: mob ? 'display:none' : `display:grid;grid-template-rows:${on ? '1fr' : '0fr'};transition:grid-template-rows .6s ${E}`,
+      s: mob ? `flex:none;min-height:48px;padding:0 16px;display:flex;align-items:center;gap:8px;border:1px solid ${on ? '#2E4A1F' : '#BDB090'};background:${on ? '#2E4A1F' : 'transparent'};color:${on ? '#F4EBD6' : '#2A1D12'};border-radius:2px;font:500 16px var(--f-sub);white-space:nowrap` : 'position:relative;display:flex;gap:18px;align-items:flex-start;width:100%;padding:10px 0;border:0;background:transparent;text-align:left;color:#2A1D12' }; });
+    // Dadi / village / stats
+    const V = [['Ramkali', 'Rajasthan', 'Ramkali, Rajasthan. 14 years making our pickles.', 'My hands know when the mango is ready.', 4, 5], ['Mohan Lal', 'Mathura, UP', 'Mohan Lal, Mathura. 22 years raising Gir cows.', 'A cow gives what she is given.', 1, 1], ['Shakti women’s group', 'Bundelkhand', 'Shakti group, Bundelkhand. 31 women, one kitchen.', 'We cook together and we eat together.', 4, 5], ['Hari Singh', 'Nawalgarh, Rajasthan', 'Hari Singh, Nawalgarh. Grows our mustard.', 'Good oil begins in the field.', 1, 1], ['Kamla Bai', 'Malihabad, UP', 'Kamla Bai, Malihabad. Third-generation mango grower.', 'These trees are older than my mother.', 4, 5], ['The Gir herd', 'Gujarat', 'The Gir herd, 212 cows, every one with a name.', 'Bhura likes the morning best.', 5, 4]];
+    const villagers = V.map((v, i) => { const hv = s.hov === 'v' + i, W = [800, 800, 800, 800, 800, 1000][i], H = [1000, 800, 1000, 800, 1000, 800][i]; return { name: v[0], place: v[1], line: v[2], q: v[3], w: v[4] === 5 ? 1000 : 800, h: v[5] === 5 ? 1000 : v[5] === 4 ? 800 : 800, label: 'PORTRAIT: ' + v[0] + ', ' + v[1], alt: v[0] + ' of ' + v[1], delay: i * 70, enter: () => this.setState({ hov: 'v' + i }), leave: () => this.setState({ hov: '' }), tap: () => this.setState(st => ({ hov: st.hov === 'v' + i ? '' : 'v' + i })), veil: `position:absolute;inset:0;background:rgba(46,74,31,.92);padding:20px;display:flex;flex-direction:column;justify-content:center;color:#F4EBD6;clip-path:inset(${hv ? 0 : 100}% 0 0 0);transition:clip-path .7s ${E}` }; });
+    // Calendar
+    const MO = [['Jan', 'January', ['Carrot', 'Turnip', 'Amla'], 'Winter vegetables are at their sweetest. Carrot and turnip go into the winter mixed pickle.', 'p3', 'Curing now', 'carrots and turnips on a wooden tray'], ['Feb', 'February', ['Red chilli', 'Cauliflower'], 'Red chillies dry on the terrace and are ground by hand for the year’s masala.', 'p4', 'Drying now', 'red chillies drying on a terrace'], ['Mar', 'March', ['Nimbu', 'Green chilli'], 'The first lemons of the season, salted and set in glass jars.', 'p2', 'Harvest now', 'fresh limes in a basket'], ['Apr', 'April', ['Kairi (raw mango)'], 'Raw mangoes turn sour and firm. Orchards open for picking.', 'p1', 'Pre-order open', 'raw mangoes on the tree'], ['May', 'May', ['Raw mango', 'Fennel', 'Fenugreek'], 'Peak season. Mango wedges are salted, dried and spiced, then packed in jars for the sun.', 'p1', 'Harvest now', 'raw mango wedges drying in the sun'], ['Jun', 'June', ['Mango', 'Mustard oil'], 'Jars sit on the terrace for six weeks. We stir them every Sunday.', 'p1', 'Sun-curing', 'glass jars of pickle on a terrace'], ['Jul', 'July', ['A2 milk'], 'Monsoon is too damp for curing, so the kitchens churn ghee.', 'g2', 'Ghee season', 'churning curd in a monsoon kitchen'], ['Aug', 'August', ['Nimbu', 'Ginger'], 'A second lime harvest arrives with the rain.', 'p2', 'Harvest now', 'limes and ginger on a wooden board'], ['Sep', 'September', ['Hari mirch'], 'Green chillies ripen and are stuffed with fennel and amchur.', 'p4', 'Harvest now', 'green chillies in a cane basket'], ['Oct', 'October', ['Cauliflower', 'Carrot'], 'Winter vegetables begin. Diwali hampers are packed this month.', 'p3', 'Pre-order open', 'cauliflower and carrots at a village market'], ['Nov', 'November', ['Amla'], 'Amla is at its best, sharp and full of vitamin C.', 'p3', 'Harvest now', 'amla in a steel plate'], ['Dec', 'December', ['Carrot', 'Radish', 'Turnip'], 'Cold days, long sun-drying. The winter pickle jars fill up.', 'p3', 'Curing now', 'radishes and turnips drying on a rope bed']];
+    const mo = MO[s.cal], pr = this.prod(mo[4]);
+    const months = MO.map((x, i) => ({ l: x[0], on: s.cal === i, click: () => this.setState({ cal: i }), s: `flex:none;min-width:72px;min-height:52px;border:1px solid ${s.cal === i ? '#2E4A1F' : '#BDB090'};background:${s.cal === i ? '#2E4A1F' : 'transparent'};color:${s.cal === i ? '#F4EBD6' : '#2A1D12'};border-radius:2px;font:600 15px var(--f-body);transition:all .4s ${E}` }));
+    // Ingredients
+    const IG = [['हल्दी', 'Turmeric', 'Erode, Tamil Nadu', 'Sun-dried and stone-ground. Gives our pickles colour and warmth.', 'turmeric roots and powder on jute'], ['सरसों', 'Mustard seeds', 'Rajasthan', 'Pressed cold into the oil every pickle is cured in.', 'mustard seeds in a wooden bowl'], ['मेथी', 'Fenugreek', 'Nagaur, Rajasthan', 'Lightly roasted for a bitter-sweet edge.', 'fenugreek seeds on aged wood'], ['सेंधा नमक', 'Rock salt', 'Himachal Pradesh', 'Mineral-rich and mild. It draws water from the mango.', 'rock salt crystals on slate'], ['कच्चा आम', 'Raw mango', 'Malihabad, UP', 'Firm, sour kairi from old orchards.', 'raw mangoes on a banana leaf'], ['दूध', 'A2 milk', 'Gir, Gujarat', 'From Gir cows, set into curd the same day.', 'a clay pot of milk on wood']];
+    const ings = IG.map((g, i) => { const hv = s.hov === 'g' + i; return { hi: g[0], en: g[1], origin: g[2], note: g[3], label: 'INGREDIENT: ' + g[4], alt: g[1] + ' on a natural surface', delay: i * 70, enter: () => this.setState({ hov: 'g' + i }), leave: () => this.setState({ hov: '' }), tap: () => this.setState(st => ({ hov: st.hov === 'g' + i ? '' : 'g' + i })), veil: `position:absolute;inset:0;background:rgba(42,29,18,.9);color:#F4EBD6;padding:24px;display:flex;align-items:center;clip-path:inset(0 0 ${hv ? 0 : 100}% 0);transition:clip-path .7s ${E}` }; });
+    // Quiz
+    const QZ = [{ q: 'How hot do you like it?', o: [['Barely any', 'mild dal and rice'], ['A gentle warmth', 'a sprinkle of chilli'], ['Bring the fire', 'green chillies, whole']] }, { q: 'What does your tongue go for?', o: [['Tangy and sharp', 'lime wedge'], ['Rich and nutty', 'ghee on a spoon'], ['Sweet and sour', 'ripe and raw mango']] }, { q: 'How will you use it?', o: [['Everyday meals', 'a thali at home'], ['As a gift', 'a wrapped box'], ['Cooking and tadka', 'a hot pan with ghee']] }];
+    const q = QZ[Math.min(s.qs, 2)];
+    const [h, tt, u] = s.qa; let rid = h === 2 ? 'p4' : tt === 1 ? (h === 0 ? 'g2' : 'g1') : tt === 2 ? 'p1' : (h === 0 ? 'p2' : 'p3'); if (u === 2) rid = tt === 1 ? 'g3' : 'g1';
+    const gift = u === 1, rp = this.prod(rid) || this.prod('g1');
+    const qRec = gift ? { name: 'A hamper, built your way', note: 'Pick a box and three jars. We add a handwritten card.', price: 'From ' + m(1070), label: 'RESULT: gift hamper, kraft box', cta: 'Build your hamper' } : { name: rp.name, note: 'Our most-loved pick for your taste.', price: 'From ' + m(rp.sizes[0][1]), label: 'RESULT: ' + rp.name + ' jar', cta: 'Add to cart' };
+    // Pair
+    const DISH = [['dal', 'Dal Chawal', 'g1', 'Stir a spoon of Bilona Ghee into hot dal just before serving. Keep a little lime pickle on the side.', 'steel plate of dal and rice'], ['paratha', 'Paratha', 'p1', 'Fold the paratha around a wedge of Aam Ka Achaar. Brush the tawa with ghee first.', 'stuffed paratha with butter'], ['khichdi', 'Khichdi', 'g2', 'Pour a ribbon of A2 Gir Ghee over steaming khichdi. Nothing else needed.', 'bowl of khichdi'], ['curd', 'Curd Rice', 'p4', 'Add a thin sliver of Hari Mirch Achaar for heat against the cool curd.', 'bowl of curd rice'], ['roti', 'Roti', 'g1', 'Press a little Bilona Ghee onto a hot roti and tear it with a piece of mango pickle.', 'stack of fresh rotis']];
+    const dd = DISH.find(d => d[0] === s.dish), dp = this.prod(dd[2]);
+    const dishTiles = DISH.map(d => { const on = s.dish === d[0]; return { l: d[1], on, label: 'DISH: ' + d[4], click: () => this.setState({ dish: d[0] }), s: `padding:0;border:2px solid ${on ? '#2E4A1F' : '#D9CCAC'};background:#FAF5E6;border-radius:2px;overflow:hidden;color:#2A1D12;transition:border-color .3s ${E}` }; });
+    // Hotspots
+    const HS = [[30, 36, 'Batch code', 'GR-2410-A, stamped under every jar.'], [64, 28, 'Ingredients', 'A2 cow milk ghee. Nothing else.'], [46, 68, 'Packed on', '12 Oct 2026. Best before 12 Oct 2027.'], [74, 76, 'FSSAI', 'Lic. No. 00000000000000 (placeholder).']];
+    const hots = HS.map((x, i) => { const o = s.hot === i; return { t: x[2], v: x[3], open: o, click: () => this.setState(st => ({ hot: st.hot === i ? -1 : i })), dot: `position:absolute;left:${x[0]}%;top:${x[1]}%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:0;background:rgba(244,235,214,.55);display:grid;place-items:center;padding:0;transition:transform .5s ${E};transform:scale(${o ? 1.15 : 1})`, core: `width:18px;height:18px;border-radius:50%;background:${o ? '#A5432A' : '#2E4A1F'};border:3px solid #FAF5E6;transition:background .3s`, tag: `position:absolute;left:${x[0]}%;top:${x[1]}%;margin-top:30px;width:min(220px,60%);background:#FAF5E6;padding:14px 16px;border-radius:2px;box-shadow:0 8px 24px -10px rgba(42,29,18,.45);z-index:3;transform:translateX(${x[0] > 55 ? '-90%' : '-10%'}) translateY(${o ? 0 : 8}px);opacity:${o ? 1 : 0};pointer-events:none;transition:opacity .4s ${E},transform .5s ${E}` }; });
+    // Hamper
+    const BX = this.BOX.map((b, i) => ({ l: b.name, price: m(b.sizes[0][1]), label: 'BOX: ' + b.name, on: s.box === i, click: () => this.setState({ box: i }), s: `padding:0;border:2px solid ${s.box === i ? '#E2B450' : 'rgba(244,235,214,.35)'};background:${s.box === i ? '#F4EBD6' : 'rgba(244,235,214,.08)'};color:${s.box === i ? '#2A1D12' : '#F4EBD6'};border-radius:2px;overflow:hidden;transition:all .4s ${E}` }));
+    const HI = ['g1', 'g2', 'p1', 'p2', 'p3', 'p4'].map(id => this.prod(id));
+    const full = s.ham.length >= 3;
+    const hitems = HI.map(p => { const on = s.ham.includes(p.id), dis = full && !on; return { data: this.card(p), on, dis, add: () => { if (dis) return; this.setState(st => ({ ham: st.ham.includes(p.id) ? st.ham.filter(x => x !== p.id) : [...st.ham, p.id] })); } }; });
+    const OC = ['Diwali', 'Rakhi', 'Wedding'], GR = ['Happy Diwali, with love and ghee.', 'Happy Rakhi, bhaiya.', 'Wishing you a sweet beginning.'];
+    const occs = OC.map((l, i) => ({ l, on: s.occ === i, click: () => this.setState({ occ: i }), s: `min-height:44px;padding:0 18px;border-radius:2px;border:1px solid ${s.occ === i ? '#2E4A1F' : '#BDB090'};background:${s.occ === i ? '#2E4A1F' : 'transparent'};color:${s.occ === i ? '#F4EBD6' : '#2A1D12'};font:600 14px var(--f-body);transition:all .3s` }));
+    const bxp = this.BOX[s.box], hTotal = bxp.sizes[0][1] + s.ham.reduce((a, id) => a + this.prod(id).sizes[0][1], 0);
+    // Wall
+    const RV = [['The ghee smells exactly like my nani’s kitchen.', 'Loved it!', 'Meera K., Pune', 'Bilona Ghee', -3, '#FAF5E6'], ['Finally a mango pickle that is sour first and spicy second.', 'Ordered four.', 'Rohit S., Bengaluru', 'Aam Ka Achaar', 2, '#F4E3B8'], ['My son stopped fussing over dal. That is the whole review.', 'Magic!', 'Anjali M., Delhi', 'A2 Gir Ghee', -1.5, '#FAF5E6'], ['Sent the hamper to my mother-in-law. She called to ask where I found it.', 'Gifting win.', 'Sneha R., Mumbai', 'Festive Hamper', 3, '#EBD3BE'], ['Real lime, real salt, real sun. Nothing I cannot pronounce.', 'Pure.', 'Farhan A., Hyderabad', 'Nimbu Achaar', -2.5, '#FAF5E6'], ['Properly hot. I cried, I smiled, I ordered again.', 'Fire!', 'Karthik V., Chennai', 'Hari Mirch Achaar', 1.5, '#F4E3B8']];
+    const wall = RV.map((r, i) => ({ text: r[0], flourish: r[1], who: r[2], item: r[3], wrap: mob ? 'flex:none;width:min(78vw,320px);scroll-snap-align:center;margin:12px 0' : 'margin:0', s: `position:relative;background:${r[5]};padding:28px 22px 20px;border-radius:2px 2px ${i % 2 ? 22 : 2}px 2px;color:#2A1D12;box-shadow:0 12px 24px -14px rgba(0,0,0,.6);transform:rotate(${r[4]}deg);transition:transform .7s ${E}` }));
+    return {
+      btnL: BTN + 'background:#F4EBD6;color:#2E4A1F;border:1px solid #F4EBD6;', qCard: this.card(rp), qIsProd: !gift, qIsGift: gift, pairCard: this.card(dp), ...this.villageVals(), ...this.calVals(), ...this.igVals(), ...this.faqVals(), ...this.nlVals(),
+      bilTabs, bilSteps, bilListOrder: 0,
+      bilPill: `position:absolute;left:4px;top:4px;bottom:4px;width:132px;background:#2E4A1F;border-radius:2px;transition:transform .6s ${E};transform:translateX(${s.bilTab === 'ghee' ? 0 : 100}%)`,
+      bilListS: mob ? 'display:flex;overflow-x:auto;gap:8px;scrollbar-width:none' : 'position:relative;display:flex;flex-direction:column;gap:6px',
+      bilRail: mob ? 'display:none' : 'position:absolute;left:19px;top:24px;bottom:24px;width:2px;background:#D9CCAC',
+      bilFill: mob ? 'display:none' : `position:absolute;left:19px;top:24px;bottom:24px;width:2px;background:#2E4A1F;transform-origin:top;transform:scaleY(${list.length > 1 ? bi / (list.length - 1) : 0});transition:transform .8s ${E}`,
+      bilBar: `height:100%;background:#2E4A1F;transform-origin:left;transform:scaleX(${(bi + 1) / list.length});transition:transform .8s ${E}`,
+      bilCur: { label: cur[2], alt: cur[2].replace(/^[A-Z]+ \d: /, ''), t: cur[0], p: cur[1], n: '0' + (bi + 1), total: '0' + list.length, meta: 'Takes: ' + META[s.bilTab][bi] },
+      bilNext: () => this.setState(st => ({ bil: Math.min(list.length - 1, st.bil + 1) })), bilPrev: () => this.setState(st => ({ bil: Math.max(0, st.bil - 1) })),
+      bilKey: e => { if (['ArrowDown', 'ArrowRight'].includes(e.key)) { e.preventDefault(); this.setState(st => ({ bil: Math.min(list.length - 1, st.bil + 1) })); } else if (['ArrowUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); this.setState(st => ({ bil: Math.max(0, st.bil - 1) })); } },
+      dadiIng: ['1 kg raw mango (kairi), with stone', '100 g rock salt', '2 tbsp turmeric', '3 tbsp fennel (saunf)', '2 tbsp fenugreek (methi)', '1 tbsp nigella (kalonji)', '2 tsp red chilli', '250 ml cold-pressed mustard oil'],
+      villagers, stats: [{ n: 40, suf: '', l: 'Families supported' }, { n: 212, suf: '', l: 'Gir cows' }, { n: 48000, suf: '+', l: 'Jars filled' }],
+      months, calCurOld: { full: mo[1], harv: mo[2], note: mo[3], status: mo[5], label: 'CALENDAR: ' + mo[6], alt: mo[6], btn: (mo[4][0] === 'g' ? 'Add ' : 'Pre-order ') + pr.name }, calAdd: () => this.addItem(mo[4], 0),
+      ings,
+      qIn: s.qs < 3, qDone: s.qs >= 3, qBars: [0, 1, 2].map(i => ({ s: `flex:1;height:4px;background:${i <= s.qs ? '#2E4A1F' : '#D9CCAC'};transition:background .5s` })),
+      qCur: { q: q.q, opts: q.o.map((o, i) => ({ l: o[0], label: 'OPTION: ' + o[1], click: () => this.setState(st => ({ qa: [...st.qa, i], qs: st.qs + 1 })) })) }, qRec,
+      qAdd: () => { if (gift) { this.setState({ qs: 0, qa: [] }); const el = document.getElementById('hamper'); el && window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 80, behavior: 'smooth' }); } else this.addItem(rid, 0); }, qReset: () => this.setState({ qs: 0, qa: [] }),
+      dishTiles, pairCur: { dish: dd[1], pname: dp.name, tip: dd[3], price: 'From ' + m(dp.sizes[0][1]), label: 'PAIR: ' + dp.name + ' with ' + dd[1].toLowerCase() }, pairAdd: () => this.addItem(dd[2], 0),
+      cmp: s.cmp, onCmp: e => this.setState({ cmp: +e.target.value }),
+      cmpClip: `position:absolute;inset:0;clip-path:inset(0 ${100 - s.cmp}% 0 0)`, cmpHandle: `position:absolute;top:0;bottom:0;left:${s.cmp}%;width:3px;margin-left:-1.5px;background:#E2B450;display:flex;align-items:center;justify-content:center;pointer-events:none`,
+      cmpRows: [{ k: 'Colour', a: 'Pale gold, natural', b: 'Bright yellow, often dyed' }, { k: 'Grain', a: 'Granular, set slowly', b: 'Smooth, whipped' }, { k: 'Aroma', a: 'Roasted nuts and butter', b: 'Faint or artificial' }],
+      cmpChecks: ['No palm oil', 'No added colour', 'No preservatives'],
+      hots, batchS2: `min-height:22px;font:600 14px/1.4 var(--f-body);color:${s.batchRes === 'ok' ? '#2E4A1F' : '#A5432A'}`,
+      boxes: BX, hitems, hcount: s.ham.length, occs, hGreet: GR[s.occ], hBox: { name: bxp.name, price: m(bxp.sizes[0][1]) }, hLines: s.ham.map(id => { const p = this.prod(id); return { name: p.name + ' · ' + p.sizes[0][0], price: m(p.sizes[0][1]) }; }), hNone: !s.ham.length, hTotal: m(hTotal),
+      hBtn: BTN + `width:100%;background:#2E4A1F;color:#F4EBD6;border:1px solid #2E4A1F;opacity:${full ? 1 : .5}`,
+      hAdd: () => { if (!full) return; this.addItem(bxp.id, 0); s.ham.forEach(id => this.addItem(id, 0)); this.setState({ ham: [], note: GR[s.occ] }); },
+      wallS: mob ? 'display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:8px 4px' : 'display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:36px 24px;padding:8px 0', wall,
+      igS: mob ? 'display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none' : 'display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px', igW: mob ? '180px' : 'auto'
+    };
+  }
+  scan() {
+    if (this.reduce) return;
+    document.querySelectorAll('[data-reveal]:not([data-rv])').forEach(el => { el.dataset.rv = 1; el.style.opacity = 0; if (el.dataset.reveal === 'clip') el.style.clipPath = 'inset(0 0 100% 0)'; this.io.observe(el); });
+  }
+  splitMask(el) {
+    const walk = n => Array.from(n.childNodes).forEach(c => {
+      if (c.nodeType === 3) { const f = document.createDocumentFragment(); c.textContent.split(/(\s+)/).forEach(w => { if (!w) return; if (/^\s+$/.test(w)) { f.appendChild(document.createTextNode(' ')); return; } const o = document.createElement('span'); o.style.cssText = 'display:inline-block;overflow:hidden;vertical-align:top;padding:0 .14em .14em 0;margin:0 -.14em -.14em 0'; const i = document.createElement('span'); i.textContent = w; i.dataset.w = 1; i.style.cssText = 'display:inline-block;transform:translateY(110%)'; o.appendChild(i); f.appendChild(o); }); c.replaceWith(f); }
+      else if (c.nodeType === 1) walk(c);
+    });
+    walk(el);
+  }
+  runMask(el, delay = 0) { el.querySelectorAll('[data-w]').forEach((w, i) => w.animate([{ transform: 'translateY(110%)' }, { transform: 'translateY(0)' }], { duration: 1000, delay: delay + i * 70, easing: this.E, fill: 'forwards' })); }
+  componentDidMount() {
+    if (!document.querySelector('link[data-fs]')) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.dataset.fs = '1'; l.href = 'https://api.fontshare.com/v2/css?f%5B%5D=gambetta@400,500,401,501&f%5B%5D=switzer@400,500,600&display=swap'; document.head.appendChild(l); }
+    const E = this.E, q = s => Array.from(document.querySelectorAll(s));
+    this.reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const mq = matchMedia('(max-width:900px)'); const setM = () => this.setState({ mob: mq.matches }); setM(); mq.addEventListener('change', setM);
+    this.io = new IntersectionObserver(es => es.forEach(en => { if (!en.isIntersecting) return; const el = en.target; this.io.unobserve(el); const d = +el.dataset.delay || 0, clip = el.dataset.reveal === 'clip'; el.animate(clip ? [{ opacity: 1, clipPath: 'inset(0 0 100% 0)' }, { opacity: 1, clipPath: 'inset(0 0 0% 0)' }] : [{ opacity: 0, translate: '0 28px' }, { opacity: 1, translate: '0 0' }], { duration: clip ? 1300 : 900, delay: d, easing: E, fill: 'forwards' }); }), { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+    this.mio = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { this.mio.unobserve(en.target); this.runMask(en.target); } }), { threshold: 0.4 });
+    q('[data-mask]').forEach(el => { if (this.reduce) return; this.splitMask(el); if (el.dataset.mask !== 'load') this.mio.observe(el); });
+    this.scan();
+    if (!this.reduce) q('[data-hero-in]').forEach(c => c.style.opacity = 0);
+    setTimeout(() => {
+      this.setState({ pre: false });
+      if (this.reduce) return;
+      const h1 = document.querySelector('[data-mask="load"]'); if (h1) this.runMask(h1, 200);
+      q('[data-hero-in]').forEach((c, i) => c.animate([{ opacity: 0, translate: '0 18px' }, { opacity: 1, translate: '0 0' }], { duration: 1000, delay: 700 + i * 120, easing: E, fill: 'forwards' }));
+      const hi = document.getElementById('hero-img'); if (hi) hi.animate([{ transform: 'scale(1.12)' }, { transform: 'scale(1)' }], { duration: 2600, easing: E, fill: 'forwards' });
+    }, this.reduce ? 50 : 900);
+    this.initExtra(); this.annT = setInterval(() => this.setState(s => ({ ann: (s.ann + 1) % 3 })), 5000);
+    this.onKey = e => {
+      const s = this.state;
+      if (e.key === 'Escape' && (s.cart || s.menu || s.search || s.mega)) { this.setState({ cart: false, menu: false, search: false, mega: false }); return; }
+      if (e.key !== 'Tab') return;
+      const id = s.cart ? 'cart-drawer' : s.menu ? 'mob-menu' : s.search ? 'search-panel' : null; if (!id) return;
+      const f = Array.from(document.getElementById(id).querySelectorAll('a[href],button,input,textarea')).filter(x => !x.disabled && x.offsetParent !== null); if (!f.length) return;
+      const a = f[0], z = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+    };
+    addEventListener('keydown', this.onKey);
+    const pars = q('[data-parallax]');
+    const loop = () => { const y = scrollY; const sc = y > 40; if (sc !== this.state.sc) this.setState({ sc }); if (!this.reduce) pars.forEach(p => { const r = p.parentElement.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return; const k = (r.top + r.height / 2 - innerHeight / 2) / innerHeight; p.style.transform = `translateY(${k * -48}px)`; }); this.raf = requestAnimationFrame(loop); };
+    loop();
+  }
+  componentDidUpdate(pp, ps) {
+    this.scan(); this.upExtra(ps);
+    const s = this.state, any = s.cart || s.menu || s.search, was = ps.cart || ps.menu || ps.search;
+    document.body.style.overflow = any ? 'hidden' : '';
+    if (any && !was) { const id = s.cart ? 'cart-drawer' : s.menu ? 'mob-menu' : 'search-input'; setTimeout(() => { const el = document.getElementById(id); const t = id === 'search-input' ? el : el && el.querySelector('button'); t && t.focus(); }, 80); }
+    if (!any && was && this.lf && this.lf.focus) this.lf.focus();
+  }
+  componentWillUnmount() { cancelAnimationFrame(this.raf); clearInterval(this.annT); removeEventListener('keydown', this.onKey); document.body.style.overflow = ''; }
+}
+</script>
+</body>
+</html>
