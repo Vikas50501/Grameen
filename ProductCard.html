@@ -35,8 +35,9 @@ class Component extends DCLogic {
   state = { hov: false, si: 0, hs: -1, bh: false, phase: 'idle' };
   componentDidMount() { this.reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; }
   componentWillUnmount() { clearTimeout(this.t1); clearTimeout(this.t2); }
-  componentDidUpdate(pp, ps) {
-    if (this.state.phase === 'loading' && ps.phase !== 'loading' && !this.reduce) { const el = document.getElementById(this.plId); el && el.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 450, easing: 'cubic-bezier(0.22,1,0.36,1)', fill: 'forwards' }); }
+  componentDidUpdate() {
+    const prev = this.prevPhase; this.prevPhase = this.state.phase;
+    if (this.state.phase === 'loading' && prev !== 'loading' && !this.reduce) { const el = document.getElementById(this.plId); el && el.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 450, easing: 'cubic-bezier(0.22,1,0.36,1)', fill: 'forwards' }); }
   }
   renderVals() {
     const P = this.props, p = P.product || {}, s = this.state, E = 'cubic-bezier(0.22,1,0.36,1)', bool = v => v === true || v === 'true';

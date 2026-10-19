@@ -21,7 +21,7 @@ class Component extends DCLogic {
     return {
       src: 'data:image/svg+xml;utf8,' + encodeURIComponent(svg), w, h, alt: p.alt || label,
       loading: (p.eager === true || p.eager === 'true') ? 'eager' : 'lazy',
-      imgS: `display:block;width:100%;${fill ? 'height:100%;' : 'height:auto;'}aspect-ratio:${w}/${h};object-fit:cover;border-radius:${p.radius || '0'};`
+      imgS: fill ? `position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;border-radius:${p.radius || '0'};` : `display:block;width:100%;height:auto;aspect-ratio:${w}/${h};object-fit:cover;border-radius:${p.radius || '0'};`
     };
   }
 }

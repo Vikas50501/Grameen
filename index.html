@@ -231,27 +231,21 @@ button,input,textarea{font-family:inherit}button{cursor:pointer}
 <section id="calendar" style="padding:clamp(56px,8vw,96px) 0;background:#F4EBD6;border-top:1px solid #D9CCAC"><div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px)">
 <div style="{{ cHeadS }}"><div style="{{ cLS }}"><div style="font:600 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#8A5F10;margin-bottom:16px">Seasonal pickle calendar</div><h2 data-mask style="margin:0;max-width:24ch;font:400 var(--t-h2)/1.1 var(--f-head);letter-spacing:-.015em;color:#2E4A1F">What is in the jar this <span style="color:#B8841E;font-style:italic">month</span></h2></div>
 <div style="{{ cRS }}"><p style="margin:0;max-width:44ch;font:400 16px/1.65 var(--f-body);color:rgba(42,29,18,.7)">Our pickles follow the harvest. Pick a month to see what is being cut, cured and packed.</p></div></div>
-<div style="margin-top:clamp(28px,4vw,48px)">
-<sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr))"><sc-for list="{{ calBands }}" as="b" hint-placeholder-count="4"><div style="{{ b.s }}">{{ b.l }}</div></sc-for></div></sc-if>
-<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><div style="border-top:1px solid #D9CCAC;padding:10px 0 4px;font:600 11px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:rgba(42,29,18,.55)">{{ calBandNow }}</div></sc-if>
-<div id="cal-track" style="{{ calTrackS }}"><div role="tablist" aria-label="Month" onKeyDown="{{ calKey }}" style="{{ calInnerS }}">
-<sc-for list="{{ calMonths }}" as="m" hint-placeholder-count="12"><button id="{{ m.id }}" role="tab" aria-selected="{{ m.on }}" aria-controls="cal-panel" tabindex="{{ m.tab }}" onClick="{{ m.click }}" onMouseEnter="{{ m.enter }}" onMouseLeave="{{ m.leave }}" style="{{ m.s }}"><span style="{{ m.nowS }}">Now</span><span style="{{ m.lS }}">{{ m.l }}</span><span style="{{ m.dot }}"></span></button></sc-for>
-<span aria-hidden="true" style="{{ calBar }}"></span></div></div>
-<div style="border-bottom:1px solid #D9CCAC"></div></div>
-<div id="cal-panel" role="tabpanel" aria-live="polite" style="{{ cMainS }}">
-<div id="cal-text" style="{{ cTextS }}">
+<div style="margin-top:clamp(28px,4vw,48px);border-bottom:1px solid #D9CCAC"><div id="cal-track" style="{{ tScrollS }}"><div role="tablist" aria-label="Month" onKeyDown="{{ calKey }}" style="display:flex;min-width:max-content;width:100%">
+<sc-for list="{{ tTabs }}" as="m" hint-placeholder-count="12"><button id="{{ m.id }}" role="tab" aria-selected="{{ m.on }}" aria-controls="cal-panel" tabindex="{{ m.tab }}" onClick="{{ m.click }}" onMouseEnter="{{ m.enter }}" onMouseLeave="{{ m.leave }}" style="{{ m.s }}"><span style="{{ m.dot }}"></span>{{ m.l }}</button></sc-for>
+</div></div></div>
+<div id="cal-panel" role="tabpanel" aria-live="polite" style="{{ tMainS }}">
+<div id="cal-text" style="{{ tTextS }}">
 <div data-ct style="font:600 11px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#A5432A">In season · {{ calCur.band }}</div>
 <div data-ct style="margin-top:8px;font:400 clamp(2.5rem,5vw,4rem)/1 var(--f-head);color:#2A1D12">{{ calCur.full }}</div>
 <p data-ct style="margin:16px 0 0;max-width:44ch;font:400 17px/1.6 var(--f-body);color:rgba(42,29,18,.8)">{{ calCur.copy }}</p>
-<div data-ct style="margin-top:32px"><div style="font:600 11px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:rgba(42,29,18,.55);padding-bottom:12px;border-bottom:1px solid #D9CCAC">On the counter</div>
-<sc-for list="{{ calIngs }}" as="i" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;align-items:center;gap:16px;height:52px;border-bottom:1px solid #D9CCAC"><span style="font:500 20px/1.2 var(--f-sub)">{{ i.n }}</span><span style="display:flex;align-items:center;gap:8px;font:500 13px/1 var(--f-body);color:rgba(42,29,18,.8)"><span style="{{ i.dot }}"></span>{{ i.st }}</span></div></sc-for></div>
-<div data-ct style="margin-top:32px;border:1px solid #D9CCAC;padding:16px;display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:16px;align-items:center"><div style="width:72px;height:72px;overflow:hidden;background:#EDE4CE"><dc-import name="Photo" w="288" h="288" label="{{ calProd.label }}" alt="{{ calProd.name }}" nodims="true" fill="true" hint-size="72px,72px"></dc-import></div><div style="min-width:0"><div style="font:500 18px/1.25 var(--f-sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ calProd.name }}</div><div style="margin-top:4px;font:500 14px/1.3 var(--f-body);font-variant-numeric:tabular-nums">{{ calProd.meta }}</div></div><a href="#best-sellers" onMouseEnter="{{ viewIn }}" onMouseLeave="{{ viewOut }}" style="display:inline-flex;align-items:center;gap:6px;color:#2E4A1F;font:600 14px/1 var(--f-body)">View<span style="{{ viewArrowS }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></span></a></div>
-<div data-ct style="margin-top:24px"><button onClick="{{ calAct }}" onMouseEnter="{{ ctaIn }}" onMouseLeave="{{ ctaOut }}" style="{{ calBtnS }}"><span>{{ calBtn }}</span><span style="{{ ctaArrowS }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></span></button><div style="margin-top:12px;font:400 13px/1.5 var(--f-body);color:rgba(42,29,18,.6)">{{ calNote }}</div></div>
+<div data-ct style="margin-top:32px;border-top:1px solid #D9CCAC"><sc-for list="{{ calIngs }}" as="i" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;align-items:center;gap:16px;height:52px;border-bottom:1px solid #D9CCAC"><span style="font:500 20px/1.2 var(--f-sub)">{{ i.n }}</span><span style="display:flex;align-items:center;gap:8px;font:500 13px/1 var(--f-body);color:rgba(42,29,18,.8)"><span style="{{ i.dot }}"></span>{{ i.st }}</span></div></sc-for></div>
+<div data-ct style="margin-top:32px;display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:16px;align-items:center"><div style="position:relative;width:64px;height:64px;overflow:hidden;background:#EDE4CE"><dc-import name="Photo" w="288" h="288" label="{{ calProd.label }}" alt="{{ calProd.name }}" nodims="true" fill="true" hint-size="64px,64px"></dc-import></div><div style="min-width:0"><div style="font:500 18px/1.25 var(--f-sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ calProd.name }}</div><div style="margin-top:4px;font:500 14px/1.3 var(--f-body);font-variant-numeric:tabular-nums">{{ calProd.meta }}</div></div><a href="#best-sellers" onMouseEnter="{{ viewIn }}" onMouseLeave="{{ viewOut }}" style="display:inline-flex;align-items:center;gap:6px;color:#2E4A1F;font:600 14px/1 var(--f-body)">View<span style="{{ viewArrowS }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></span></a></div>
+<div data-ct style="margin-top:20px"><button onClick="{{ calAct }}" onMouseEnter="{{ ctaIn }}" onMouseLeave="{{ ctaOut }}" style="{{ calBtnS }}"><span>{{ calBtn }}</span><span style="{{ ctaArrowS }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></span></button><div style="margin-top:12px;font:400 13px/1.5 var(--f-body);color:rgba(42,29,18,.6)">{{ calNote }}</div></div>
 </div>
-<div style="{{ cPhotoCol }}"><div onTouchStart="{{ cTS }}" onTouchEnd="{{ cTE }}" style="{{ cPhotoS }}">
-<sc-for list="{{ calLayers }}" as="l" hint-placeholder-count="12"><div data-clayer="{{ l.i }}" aria-hidden="{{ l.hid }}" style="{{ l.s }}"><div style="position:absolute;inset:0"><dc-import name="Photo" w="1200" h="1500" label="{{ l.label }}" alt="{{ l.alt }}" eager="true" fill="true" hint-size="100%,100%"></dc-import></div></div></sc-for>
-<div style="position:absolute;left:0;right:0;bottom:0;z-index:5;background:rgba(42,29,18,.85);color:#F4EBD6;display:flex;align-items:center;min-height:44px"><div style="flex:1;min-width:0;padding:10px 16px;font:500 13px/1.35 var(--f-body)">{{ calCur.caption }}</div>
-<button onClick="{{ calPrev }}" aria-label="Previous month" style="width:44px;height:44px;flex:none;border:0;border-left:1px solid rgba(244,235,214,.25);background:transparent;color:#F4EBD6;display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button><span style="font:600 12px/1 var(--f-body);letter-spacing:.06em;font-variant-numeric:tabular-nums;padding:0 4px">{{ calCount }}</span><button onClick="{{ calNext }}" aria-label="Next month" style="width:44px;height:44px;flex:none;border:0;background:transparent;color:#F4EBD6;display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button></div></div></div>
+<div style="{{ tPhotoCol }}"><div onTouchStart="{{ cTS }}" onTouchEnd="{{ cTE }}" style="{{ tPhotoS }}">
+<sc-for list="{{ calLayers }}" as="l" hint-placeholder-count="12"><div data-clayer="{{ l.i }}" aria-hidden="{{ l.hid }}" style="{{ l.s }}"><div style="position:absolute;inset:0"><dc-import name="Photo" w="1200" h="1500" label="{{ l.label }}" alt="{{ l.alt }}" eager="true" fill="true" hint-size="100%,100%"></dc-import></div></div></sc-for></div>
+<div style="{{ tCapS }}">{{ calCur.caption }}</div></div>
 </div></div></section>
 
 <!-- ============ 10 · INGREDIENTS WALL ============ SECTION ingredient-grid · schema: blocks[image, hindi, english, origin, note] -->
@@ -294,7 +288,7 @@ button,input,textarea{font-family:inherit}button{cursor:pointer}
 <!-- ============ 15 · PRODUCT SPOTLIGHT ============ SECTION featured-product · schema: product, show_pincode, benefits[] · {{ product.media }}, {{ product.variants }}, form 'product' -->
 <section id="spotlight" style="padding:clamp(56px,8vw,96px) 0;background:#F4EBD6;border-top:1px solid #D9CCAC">
   <div style="max-width:1320px;margin:0 auto;padding:0 clamp(16px,2.2vw,24px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(24px,5vw,72px);align-items:start">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:12px">
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
       <div style="grid-column:1/-1;overflow:hidden;border-radius:2px"><dc-import name="Photo" w="1200" h="1400" label="{{ spot.main }}" alt="A2 Gir Cow Ghee product gallery" eager="true" hint-size="100%,500px"></dc-import></div>
       <sc-for list="{{ thumbs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.click }}" aria-label="{{ t.alt }}" aria-pressed="{{ t.on }}" style="{{ t.s }}"><dc-import name="Photo" w="300" h="350" label="{{ t.label }}" nodims="true" hint-size="100%,90px"></dc-import></button></sc-for>
     </div>
@@ -383,7 +377,7 @@ button,input,textarea{font-family:inherit}button{cursor:pointer}
 <label style="display:flex;gap:12px;align-items:flex-start;margin-top:16px;font:400 13px/1.5 var(--f-body);color:rgba(244,235,214,.7)"><input type="checkbox" required style="width:20px;height:20px;margin:0;accent-color:#E2B450;flex:none"></input>I agree to receive emails from Grameen and can unsubscribe at any time. See our privacy policy.</label></form></sc-if>
 <sc-if value="{{ nlDone }}" hint-placeholder-val="{{ false }}"><div role="status" style="border-top:1px solid rgba(244,235,214,.3);border-bottom:1px solid rgba(244,235,214,.3);padding:20px 0"><div style="font:500 var(--t-h3)/1.2 var(--f-sub)">You are on the list.</div><div style="margin-top:6px;font:400 15px/1.6 var(--f-body);color:rgba(244,235,214,.8)">Use code <strong style="color:#E2B450;letter-spacing:.06em">FIRSTJAR10</strong> at checkout for 10% off your first jar.</div></div></sc-if>
 <ul style="list-style:none;margin:32px 0 0;padding:0;display:grid;gap:12px"><sc-for list="{{ nlPerks }}" as="p" hint-placeholder-count="3"><li style="display:flex;gap:12px;font:500 15px/1.4 var(--f-body)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E2B450" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px"><path d="M4 12.500l5 5L20 6.500"></path></svg>{{ p }}</li></sc-for></ul></div>
-<div style="position:relative"><div style="aspect-ratio:4/5;overflow:hidden;background:#EDE4CE;max-height:640px"><dc-import name="Photo" w="1200" h="1500" label="NEWSLETTER: open jar of ghee beside fresh bread, overhead" alt="An open jar of ghee next to fresh bread, shot from above" fill="true" hint-size="100%,420px"></dc-import></div>
+<div style="position:relative"><div style="position:relative;aspect-ratio:4/5;overflow:hidden;background:#EDE4CE;max-height:640px"><dc-import name="Photo" w="1200" h="1500" label="NEWSLETTER: open jar of ghee beside fresh bread, overhead" alt="An open jar of ghee next to fresh bread, shot from above" fill="true" hint-size="100%,420px"></dc-import></div>
 <div style="position:absolute;left:0;bottom:0;background:#FAF5E6;color:#2A1D12;padding:16px 20px;min-width:200px"><div style="font:600 11px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:#A5432A">First jar</div><div style="margin-top:8px;font:400 32px/1 var(--f-head)">10% off</div><div style="margin-top:6px;font:500 13px/1.3 var(--f-body);color:rgba(42,29,18,.7)">{{ nlCode }}</div></div></div>
 </div></section>
 </main>
@@ -622,6 +616,25 @@ class Component extends DCLogic {
         nowS: 'position:absolute;top:8px;left:0;right:0;text-align:center;font:600 10px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:#A5432A;display:' + (i === now ? 'block' : 'none') }; }),
       calBar: 'position:absolute;left:0;bottom:0;width:calc(100% / 12);height:3px;background:#2E4A1F;transform:translateX(' + cal * 100 + '%);transition:transform .5s ' + E,
       calKey: e => { let n = null; if (e.key === 'ArrowRight') n = cal + 1; else if (e.key === 'ArrowLeft') n = cal - 1; else if (e.key === 'Home') n = 0; else if (e.key === 'End') n = 11; if (n !== null) { e.preventDefault(); go(n); } },
+      tScrollS: mob ? 'overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * clamp(16px,2.2vw,24px));padding:0 clamp(16px,2.2vw,24px)' : '',
+      tTabs: MO.map((x, i) => { const on = i === cal, hv = s.hov === 'gh' + i && !on; return { id: 'cm' + i, l: x[0], on, tab: on ? 0 : -1, click: () => this.selectMonth(i), enter: () => this.setState({ hov: 'gh' + i }), leave: () => this.setState({ hov: '' }),
+        s: 'position:relative;flex:' + (mob ? 'none' : '1') + ';min-width:' + (mob ? '64px' : '0') + ';height:56px;border:0;border-bottom:3px solid ' + (on ? '#2E4A1F' : 'transparent') + ';margin-bottom:-1px;background:transparent;border-radius:0;font:600 13px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:' + (on ? '#2E4A1F' : hv ? '#2A1D12' : 'rgba(42,29,18,.55)') + ';transition:color .3s ' + E + ',border-color .3s ' + E,
+        dot: 'position:absolute;top:10px;left:50%;margin-left:-2.5px;width:5px;height:5px;border-radius:50%;background:#A5432A;display:' + (i === now ? 'block' : 'none') }; }),
+      tMainS: mob ? 'display:flex;flex-direction:column;gap:24px;margin-top:24px' : 'display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:start;margin-top:48px',
+      tTextS: mob ? 'order:2' : 'grid-column:1/7', tPhotoCol: mob ? 'order:1;margin:0 calc(-1 * clamp(16px,2.2vw,24px))' : 'grid-column:8/13',
+      tPhotoS: 'position:relative;overflow:hidden;background:#EDE4CE;aspect-ratio:' + (mob ? '1/1' : '4/5'), tCapS: 'margin-top:12px;font:500 13px/1.4 var(--f-body);color:rgba(42,29,18,.6);' + (mob ? 'padding:0 clamp(16px,2.2vw,24px)' : ''),
+      gMainS: mob ? 'display:flex;flex-direction:column;gap:32px;margin-top:32px' : 'display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:48px 24px;align-items:start;margin-top:48px',
+      gChartCol: mob ? '' : 'grid-column:1/8', gCardCol: mob ? '' : 'grid-column:8/13;position:sticky;top:96px',
+      gScrollS: mob ? 'overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * clamp(16px,2.2vw,24px));padding:0 clamp(16px,2.2vw,24px)' : '', gMin: mob ? '660px' : '0',
+      gGridCols: (mob ? '108px' : 'clamp(96px,10vw,132px)') + ' repeat(12,minmax(0,1fr))',
+      gLegend: [['Peak', '#2E4A1F', 10], ['Early', '#D99A1C', 6], ['Ending', '#A5432A', 6]].map(x => ({ l: x[0], s: 'width:20px;height:' + x[2] + 'px;background:' + x[1] })),
+      gHeads: MO.map((x, i) => { const on = i === cal, hv = s.hov === 'gh' + i && !on; return { id: 'cm' + i, l: x[0], on, tab: on ? 0 : -1, click: () => this.selectMonth(i), enter: () => this.setState({ hov: 'gh' + i }), leave: () => this.setState({ hov: '' }),
+        s: 'position:relative;height:64px;border:0;border-top:3px solid ' + (on ? '#2E4A1F' : 'transparent') + ';background:' + (on ? '#FAF5E6' : 'transparent') + ';display:flex;align-items:flex-end;justify-content:center;padding:0 0 12px;border-radius:0;transition:background .3s ' + E,
+        lS: 'font:600 12px/1 var(--f-body);letter-spacing:.04em;text-transform:uppercase;color:' + (on ? '#2E4A1F' : hv ? '#2A1D12' : 'rgba(42,29,18,.55)') + ';transition:color .3s ' + E,
+        nowS: 'position:absolute;top:8px;left:0;right:0;text-align:center;font:600 10px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:#A5432A;display:' + (i === now ? 'block' : 'none') }; }),
+      gRows: ['Raw mango', 'Lemon', 'Ginger', 'Green chilli', 'Red chilli', 'Garlic', 'Amla', 'Carrot', 'Turmeric', 'Radish'].map(name => ({ name, nameS: 'display:flex;align-items:center;height:52px;border-bottom:1px solid #D9CCAC;font:500 18px/1.2 var(--f-sub);color:#2A1D12;' + (mob ? 'position:sticky;left:0;z-index:2;background:#F4EBD6;padding-right:8px' : ''),
+        cells: MO.map((x, i) => { const f = x[3].find(y => y[0] === name), st = f && f[1], col = { Peak: '#2E4A1F', Early: '#D99A1C', Ending: '#A5432A' }[st], on = i === cal;
+          return { click: () => this.selectMonth(i), s: 'height:52px;border-bottom:1px solid #D9CCAC;display:flex;align-items:center;justify-content:center;cursor:pointer;background:' + (on ? '#FAF5E6' : 'transparent') + ';transition:background .3s ' + E, b: st ? 'display:block;width:100%;height:' + (st === 'Peak' ? 10 : 6) + 'px;background:' + col : 'display:block;width:3px;height:3px;border-radius:50%;background:#D9CCAC' }; }) })),
       cMainS: mob ? 'display:flex;flex-direction:column;gap:24px;margin-top:24px' : 'display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:start;margin-top:48px',
       cTextS: mob ? 'order:2' : 'grid-column:1/6',
       cPhotoCol: mob ? 'order:1;margin:0 calc(-1 * clamp(16px,2.2vw,24px))' : 'grid-column:7/13', cPhotoS: 'position:relative;overflow:hidden;background:#EDE4CE;aspect-ratio:' + (mob ? '1/1' : '4/5'),
@@ -787,6 +800,11 @@ class Component extends DCLogic {
       igS: mob ? 'display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none' : 'display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px', igW: mob ? '180px' : 'auto'
     };
   }
+  reveal(el) {
+    if (el.dataset.rv === '2') return; el.dataset.rv = '2'; this.io.unobserve(el);
+    const d = +el.dataset.delay || 0, clip = el.dataset.reveal === 'clip';
+    el.animate(clip ? [{ opacity: 1, clipPath: 'inset(0 0 100% 0)' }, { opacity: 1, clipPath: 'inset(0 0 0% 0)' }] : [{ opacity: 0, translate: '0 28px' }, { opacity: 1, translate: '0 0' }], { duration: clip ? 1300 : 900, delay: d, easing: this.E, fill: 'forwards' });
+  }
   scan() {
     if (this.reduce) return;
     document.querySelectorAll('[data-reveal]:not([data-rv])').forEach(el => { el.dataset.rv = 1; el.style.opacity = 0; if (el.dataset.reveal === 'clip') el.style.clipPath = 'inset(0 0 100% 0)'; this.io.observe(el); });
@@ -800,11 +818,12 @@ class Component extends DCLogic {
   }
   runMask(el, delay = 0) { el.querySelectorAll('[data-w]').forEach((w, i) => w.animate([{ transform: 'translateY(110%)' }, { transform: 'translateY(0)' }], { duration: 1000, delay: delay + i * 70, easing: this.E, fill: 'forwards' })); }
   componentDidMount() {
+    this.prevS = { ...this.state, ham: this.state.ham.slice() };
     if (!document.querySelector('link[data-fs]')) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.dataset.fs = '1'; l.href = 'https://api.fontshare.com/v2/css?f%5B%5D=gambetta@400,500,401,501&f%5B%5D=switzer@400,500,600&display=swap'; document.head.appendChild(l); }
     const E = this.E, q = s => Array.from(document.querySelectorAll(s));
     this.reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const mq = matchMedia('(max-width:900px)'); const setM = () => this.setState({ mob: mq.matches }); setM(); mq.addEventListener('change', setM);
-    this.io = new IntersectionObserver(es => es.forEach(en => { if (!en.isIntersecting) return; const el = en.target; this.io.unobserve(el); const d = +el.dataset.delay || 0, clip = el.dataset.reveal === 'clip'; el.animate(clip ? [{ opacity: 1, clipPath: 'inset(0 0 100% 0)' }, { opacity: 1, clipPath: 'inset(0 0 0% 0)' }] : [{ opacity: 0, translate: '0 28px' }, { opacity: 1, translate: '0 0' }], { duration: clip ? 1300 : 900, delay: d, easing: E, fill: 'forwards' }); }), { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+    this.io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) this.reveal(en.target); }), { threshold: 0, rootMargin: '0px 0px -5% 0px' });
     this.mio = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { this.mio.unobserve(en.target); this.runMask(en.target); } }), { threshold: 0.4 });
     q('[data-mask]').forEach(el => { if (this.reduce) return; this.splitMask(el); if (el.dataset.mask !== 'load') this.mio.observe(el); });
     this.scan();
@@ -828,10 +847,14 @@ class Component extends DCLogic {
     };
     addEventListener('keydown', this.onKey);
     const pars = q('[data-parallax]');
-    const loop = () => { const y = scrollY; const sc = y > 40; if (sc !== this.state.sc) this.setState({ sc }); if (!this.reduce) pars.forEach(p => { const r = p.parentElement.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return; const k = (r.top + r.height / 2 - innerHeight / 2) / innerHeight; p.style.transform = `translateY(${k * -48}px)`; }); this.raf = requestAnimationFrame(loop); };
+    const loop = () => { const y = scrollY; this.fr = (this.fr || 0) + 1; if (this.fr % 8 === 0 && !this.reduce) document.querySelectorAll('[data-rv="1"]').forEach(el => { const r = el.getBoundingClientRect(); if (r.top < innerHeight * 0.95 && r.bottom > 0) this.reveal(el); }); const sc = y > 40; if (sc !== this.state.sc) this.setState({ sc }); if (!this.reduce) pars.forEach(p => { const r = p.parentElement.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return; const k = (r.top + r.height / 2 - innerHeight / 2) / innerHeight; p.style.transform = `translateY(${k * -48}px)`; }); this.raf = requestAnimationFrame(loop); };
     loop();
   }
-  componentDidUpdate(pp, ps) {
+  componentDidUpdate() {
+    const ps = this.prevS || { ...this.state, ham: [] };
+    try { this.cduBody(ps); } finally { this.prevS = { ...this.state, ham: (this.state.ham || []).slice() }; }
+  }
+  cduBody(ps) {
     this.scan(); this.upExtra(ps);
     const s = this.state, any = s.cart || s.menu || s.search, was = ps.cart || ps.menu || ps.search;
     document.body.style.overflow = any ? 'hidden' : '';
